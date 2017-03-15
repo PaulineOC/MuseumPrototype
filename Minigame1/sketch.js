@@ -70,7 +70,7 @@ function draw() {
     background(0,0,150);
   }
   else{
-      background(0,0,0);
+      background(128);
   }
   
   tree.drawTree();
@@ -79,15 +79,14 @@ function draw() {
       if(z<allFruits[j].y+allFruits[j].rH && z+rad>allFruits[j].y){
         
         allFruits[j].hover=true;
-        
         if(fist){
           allFruits[j].firstPick=true;
           allFruits[j].selected =true;
           allFruits[j].b=250;
           allFruits[j].drawFruit(x,z);
         }
-      
-      
+        
+        allFruits[j].selected =false;
       }//end of y collision 
     }//end of x collisions
     else{
@@ -95,11 +94,7 @@ function draw() {
       allFruits[j].selected=false;
       allFruits[j].hover=false;
     }
-    
     allFruits[j].drawFruit();
-
-  
-
       
   }//end of for
       
@@ -140,7 +135,7 @@ function Fruit(x,y,r1,r2){
       }
     }//end of selected 
     if(this.firstPick && !this.selected){
-        this.y+=0.5;
+        this.y+=0.25;
       }
     ellipse(this.x, this.y, this.rW, this.rH);
     }
@@ -184,8 +179,6 @@ function handleHandData(frame) {
     }
   }
 }
-
-
 
 
 //CHECKING IS FIST (from stackoverflow)
