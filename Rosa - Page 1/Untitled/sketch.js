@@ -10,9 +10,13 @@ var screenHeight = 600;
 
 var choices=[];
 
-var blank;
+var blank1;
 
+var curr_selected_blank;
 var curr_selected_word;
+
+// detects if user should move on to next page
+var page1_finished= false;
 
 function preload(){
   background_img = loadImage('background.png');
@@ -57,6 +61,7 @@ function draw() {
   // color of text
   fill(0,0,0);
   
+  //background
   background(background_img);
   
   // WRITE EXCERPT
@@ -67,10 +72,12 @@ function draw() {
    // draw our text
   text("Sally wanted to pick", 130,250);
   
-  blank = new word('_______', 320,250);
-  blank.drawText();
+  blank1 = new blank('_______', 320,250);
+  blank1.drawText();
+
 
   
+  // write word choices on page
    for(var i = 0; i < choices.length; i++){
     choices[i].drawText();
   }
@@ -116,8 +123,14 @@ function handleGestures(gesture) {
   if (gesture.type == 'keyTap') {
     //curr_selected_word
     if(curr_selected_word != null){
-      curr_selected_word.moveText(blank.x,blank.z);
-    }
+      curr_selected_word.moveText(blank1.x,blank1.z);
+      // make other selections disappear
+      for(var i = 0; i < choices.length; i++){
+        if(choices[i].word != curr_selected_word.word){
+          choices[i].moveText(2000,2000);
+        }
+      } // end of for
+    }// end of if
   }
 }
 
@@ -152,6 +165,33 @@ function word(word,x,z){
       } 
     }
   }
+    
+}
+
+function blank(word,x,z){
+  this.word = word;
+  this.x = x;
+  this.z = z;
+  
+  // draw word
+  this.drawText = function(){
+    textSize(20);
+      // set font
+    textFont("Helvetica");
+    text(this.word,this.x,this.z);
+  };
+  
+  this.checkHit = function (){
+  
+  if(inRange(mapped_x, this.x)){
+    if(inRange(mapped_z, this.z)){
+     // register hit
+     curr_selected_blank = this;
+     
+    } 
+  }
+}
+  
     
 }
 
