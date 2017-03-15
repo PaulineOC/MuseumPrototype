@@ -6,13 +6,28 @@ var leapController;
 var screenWidth;
 var screenHeight;
 
+//Game states
+var begin=true;
+var start=false;
+var appleSuccess=0;
+var win=false;
+var greeting;
+
+var mouse=false;
+var hand=false;
+
 // x & y position of our user controlled character
 var x = 0;
 var z = 0;
 var rad =0;
 
+//Other Game Objects
 var allFruits=[];
 var tree;
+var bucketX=125;
+var bucketY=650;
+var bucketW=150;
+var bucketH=75;
 
 var fist=false;
 var fruitSelected=false;
@@ -47,61 +62,122 @@ function setup() {
   leapController.on("gesture", handleGestures);
   noStroke();
   
-  
   //Game Setup: 
-  var numFruits=1;
-  //Tree
-  img = loadImage('assets/tree.png');
-  tree = new Tree(screenWidth-550,150);
-   //draw 3 fruits
-   for(var j=0;j<numFruits;j++){
-     var randX =random(tree.x+tree.wOffset,(tree.w+1));
-     var randY = random(tree.y+tree.hOffset,(tree.h+1));
-     var radius=random(50,40);
-      allFruits.push(new Fruit(randX, randY,radius, radius));
-   }
+  
+  //Game overview:
+      greeting = new word("Hello! Please press 'H' to play with the Leap.\n Press 'M' to play with mouse",windowWidth/4,windowHeight/2,0,0,255);
+
+  
+  //Actual Game: 
+    var numFruits=3;
+    //Tree
+    img = loadImage('assets/tree.png');
+    tree = new Tree(screenWidth-550,150);
+     //draw 3 fruits
+     for(var j=0;j<numFruits;j++){
+       var randX =random(tree.x+tree.wOffset,(tree.w+1));
+       var randY = random(tree.y+tree.hOffset,(tree.h+1));
+       var radius=random(40,50);
+        allFruits.push(new Fruit(randX, randY,radius, radius));
+     }
    
  // var player= new player();
    
 }
 
-function draw() {
-  if(fist){
-    background(0,0,150);
-  }
-  else{
-      background(128);
+
+function keyTyped() {
+  if(!start){
+    if (key=== 'm') {
+      begin=false;
+      start=true;
+      mouse=true;
+    
+    } 
+    else if(key === 'h') {
+      begin=false;
+      start=true;
+      hand=true;
+    }
   }
   
-  tree.drawTree();
-  for(var j=0;j<allFruits.length;j++){
-    if(x<allFruits[j].x+allFruits[j].rW && x+rad>allFruits[j].x){
-      if(z<allFruits[j].y+allFruits[j].rH && z+rad>allFruits[j].y){
+}
+function draw() {
+  if(begin){
+    background(255);
+    greeting.drawText();
+  }
+  if(start){
+    //hand controller
+    if(hand && !mouse){
+       if(fist){
+        background(0,0,150);
+      }
+      else{
+        background(128);
+      }
+      tree.drawTree();
+      for(var j=0;j<allFruits.length;j++){
+        if(x<allFruits[j].x+allFruits[j].rW && x+rad>allFruits[j].x){
+          if(z<allFruits[j].y+allFruits[j].rH && z+rad>allFruits[j].y){
         
-        allFruits[j].hover=true;
-        if(fist){
-          allFruits[j].firstPick=true;
-          allFruits[j].selected =true;
-          allFruits[j].b=250;
-          allFruits[j].drawFruit(x,z);
+            if(fist){
+              allFruits[j].firstPick=true;
+              allFruits[j].selected =true;
+              allFruits[j].b=250;
+              allFruits[j].drawFruit(x,z);
+            }
+            allFruits[j].hover=true;
+            allFruits[j].selected =false;
+          }//end of y collision 
+        }//end of x collisions
+        else{
+          allFruits[j].b=0;
+          allFruits[j].selected=false;
+          allFruits[j].hover=false;
         }
+        //collision with bucket
+        if(allFruits[j].x<bucketX+bucketW && allFruits[j].x+allFruits[j].rW > bucketX){
+          if(allFruits[j].y<bucketY+bucketH && allFruits[j].y+allFruits[j].rH > bucketY){
+            console.log('apple landed successfully');
+          }
+        }
+        allFruits[j].drawFruit();
+      }//end of for
+      
+      //Bucket
+      fill(255,255,0);
+      rect(bucketX,screenHeight-bucketH,bucketW,bucketH);
+      fill(0);
+      noStroke();
+      ellipse(x, z, rad, rad);
         
-        allFruits[j].selected =false;
-      }//end of y collision 
-    }//end of x collisions
-    else{
-      allFruits[j].b=0;
-      allFruits[j].selected=false;
-      allFruits[j].hover=false;
+        
+      
+    }//end of hand control
+    else if(mouse && !hand){
+      background(200);
+      tree.drawTree();
+      //console.log("using mouse controller");
+      
+      
+      //Bucket
+      fill(255,255,0);
+      rect(bucketX,screenHeight-bucketH,bucketW,bucketH);
+    
+      fill(0);
+      noStroke();
+      ellipse(x, z, rad, rad);
     }
-    allFruits[j].drawFruit();
-      
-  }//end of for
-      
+    
+    
 
-  fill(255);
-  noStroke();
-  ellipse(x, z, rad, rad);
+    
+    
+  }//end of game start/playing
+ 
+  
+  
   
 
 }//END OF DRAW
@@ -134,8 +210,9 @@ function Fruit(x,y,r1,r2){
         this.y=yNew;
       }
     }//end of selected 
-    if(this.firstPick && !this.selected){
-        this.y+=0.25;
+    if(this.firstPick && !this.selected && this.y>screenHeight-this.rH){
+        this.y+=0.5;
+
       }
     ellipse(this.x, this.y, this.rW, this.rH);
     }
@@ -152,6 +229,28 @@ function Tree(x,y,w,h){
   this.drawTree = function(){
     image(img,x,y);
   }
+}
+
+
+//Word Class
+function word(word,x,y,r,g,b){
+  this.word=word;
+  this.x=x;
+  this.y=y;
+  this.r=r;
+  this.g=g;
+  this.b=b;
+  this.len=0;
+  //this.x2 = this.x+50;
+  //this.y2 =this.y+25;
+  
+  this.drawText = function(){
+    textSize(28);
+    textFont("Georgia");
+    fill(this.r,this.g,this.b);
+    text(this.word,this.x,this.y,this.x2,this.y2);
+    this.len=textWidth(this.word);
+  };
 }
 
 //LEAP MOTION STUFF
@@ -183,7 +282,6 @@ function handleHandData(frame) {
 
 //CHECKING IS FIST (from stackoverflow)
 const minValue = 0.6;
-
 function getExtendedFingers(hand){
    var f = 0;
    for(var i=0;i<hand.fingers.length;i++){
