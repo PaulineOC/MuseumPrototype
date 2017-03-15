@@ -96,7 +96,6 @@ Leap.loop(controllerOptions,function(frame){
   });
 
 
-
 function isFist(frame){
     if(frame.hands.length>0){
       var hand = frame.hands[0];
