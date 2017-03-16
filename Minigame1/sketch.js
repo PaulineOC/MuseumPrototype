@@ -210,12 +210,12 @@ function Fruit(x,y,r1,r2){
         this.y=yNew;
       }
     }//end of selected 
-    if(this.firstPick && !this.selected && this.y>screenHeight-this.rH){
+    else if(this.firstPick && !this.selected && this.y<screenHeight-this.rH){
+        console.log('falling');
         this.y+=0.5;
-
       }
     ellipse(this.x, this.y, this.rW, this.rH);
-    }
+    }//end of drawFruit
 }
 
 //Tree
