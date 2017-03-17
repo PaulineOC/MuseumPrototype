@@ -95,10 +95,4 @@ function word(word,x,y,r,g,b){
     }
     this.drawText();
   };
-  
-  
-  
-  
-  
-  
 }

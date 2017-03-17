@@ -46,6 +46,7 @@ function setup() {
   // text("apples", 700,130);
   // text("peaches", 700,250);
   // text("avocado", 700,400);
+  blank1 = new blank('_______', 320,250);
   var apples = new word('apples', 700,130);
   choices.push(apples);
   var peaches = new word('peaches', 700,250);
@@ -72,10 +73,8 @@ function draw() {
    // draw our text
   text("Sally wanted to pick", 130,250);
   
-  blank1 = new blank('_______', 320,250);
   blank1.drawText();
-
-
+  
   
   // write word choices on page
    for(var i = 0; i < choices.length; i++){

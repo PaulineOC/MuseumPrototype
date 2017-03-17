@@ -31,91 +31,95 @@ var bucketH=75;
 
 var fist=false;
 var fruitSelected=false;
+var madeTap=false;
 
 //Images
 var img;
 var img2;
+var backgroundImg
+
+
+
+
+
+//BOARD GAME STUFF
+var sizeG = 5;
+var grid;
+var currObj=null
+var thisX=null;
+var thisY=null;
+var goodF=0;
+var badF=0;
+
+
 function setup() {
-  
-  screenWidth = 800;
-  screenHeight = 700;
-  
   screenWidth = 1000;
   screenHeight = 700;
   
-  x =50;
-  z = screenHeight/2;
-  rad=25;
-  
   createCanvas(screenWidth, screenHeight);
-
+  //background image:
+  backgroundImg=loadImage('assets/background.png');
   // grab a connection to our output div
   outputDiv = select('#output');
-  
   // set up our leap controller
   leapController = new Leap.Controller({
     enableGestures: true
   });
-
   // every time the Leap provides us with hand data we will ask it to run this function
   leapController.loop( handleHandData );
-  // handle gestures using a special function as well
+  //handle gestures using a special function as well
   leapController.on("gesture", handleGestures);
   noStroke();
   
   //Game overview:
-      greeting = new word("Hello! Please press 'H' to play with the Leap.\n Press 'M' to play with mouse",windowWidth/4,windowHeight/2,0,0,255);
+      greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
 
   //Hand test
   img2 = loadImage('assets/hand2.png');
   
+
   //Actual Game: 
-    var numFruits=3;
+    
+  //Player control
+  x =50;
+  z = screenHeight/2;
+  rad=15;
+  
+  
+  
+  var tmpCount=0;
+  var gridX=screenWidth-550;
+  //starts at 450
+  var gridY=250;
+  var boxSize=55;
+  //GRID:
+    grid = new Array();
+    for(var i=1;i<=sizeG;i++){
+      grid[i]=new Array();
+      for(var j=1;j<=sizeG;j++){
+        var radius=random(25,35);
+        grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
+        tmpCount++;
+      }
+    }
+    
     //Tree
     img = loadImage('assets/tree.png');
     tree = new Tree(screenWidth-550,150);
-     //draw 3 fruits
-     for(var j=0;j<numFruits;j++){
-       var randX =random(tree.x+tree.wOffset,(tree.w+1));
-       var randY = random(tree.y+tree.hOffset,(tree.h+1));
-       var radius=random(40,50);
-        allFruits.push(new Fruit(randX, randY,radius, radius));
-     }
-   
- // var player= new player();
-   
-}
-
-
-function keyTyped() {
-  if(!start){
-    if (key=== 'm') {
-      begin=false;
-      start=true;
-      mouse=true;
     
-    } 
-    else if(key === 'h') {
-      begin=false;
-      start=true;
-      hand=true;
-    }
-  }
-  
 }
+
+
 function draw() {
   if(begin){
     background(149);
     greeting.drawText();
-    
     //tint(0, 0, 0, 25);  // Tint blue and set transparency
     //image(img2,500,500);
-    
-
   }
   if(start){
     //hand controller
-    if(hand && !mouse){
+  
       
        if(fist){
         background(0,0,150);
@@ -124,76 +128,44 @@ function draw() {
         background(128);
       }
       
-      tree.drawTree();
-      for(var j=0;j<allFruits.length;j++){
-        if(x<allFruits[j].x+allFruits[j].rW && x+rad>allFruits[j].x){
-          if(z<allFruits[j].y+allFruits[j].rH && z+rad>allFruits[j].y){
-        
-            if(fist){
-              allFruits[j].firstPick=true;
-              allFruits[j].selected =true;
-              allFruits[j].b=250;
-              allFruits[j].drawFruit(x,z);
-            }
-            allFruits[j].hover=true;
-            allFruits[j].selected =false;
-          }//end of y collision 
-        }//end of x collisions
-        else{
-          allFruits[j].b=0;
-          allFruits[j].selected=false;
-          allFruits[j].hover=false;
-        }
-        //collision with bucket
-        if(allFruits[j].x<bucketX+bucketW && allFruits[j].x+allFruits[j].rW > bucketX){
-          if(allFruits[j].y<bucketY+bucketH && allFruits[j].y+allFruits[j].rH > bucketY){
-            console.log('apple landed successfully');
-          }
-        }
-        allFruits[j].drawFruit();
-      }//end of for
-      
-      //Bucket
-      fill(255,255,0);
-      rect(bucketX,screenHeight-bucketH,bucketW,bucketH);
-      fill(0);
-      
+      image(backgroundImg,0,0);
 
+      for(var i=1;i<=5;i++){
+        for(var j=1;j<=5;j++){
+          var radius=random(25,40);
+
+          if(x<grid[i][j].x+grid[i][j].rW && x+rad>grid[i][j].x){
+            if(z<grid[i][j].y+grid[i][j].rH && z+rad>grid[i][j].y){
+              
+
+              thisX=i;
+              thisY=j;
+              
+               if(!grid[i][j].selected){
+                grid[i][j].hover=true;
+              }
+
+
+            }
+          }
+          else{
+            grid[i][j].hover=false;
+          }
+          grid[i][j].drawFruit();
+          
+        }
+      }
+      
+      fill(0);
       noStroke();
       ellipse(x, z, rad, rad);
       
       // tint(0, 0, 25, 50);  // Tint blue and set transparency
       // image(img2,x,y);
-      
-      
-        
-        
-      
-    }//end of hand control
-    else if(mouse && !hand){
-      background(200);
-      tree.drawTree();
-      //console.log("using mouse controller");
-      
-      
-      //Bucket
-      fill(255,255,0);
-      rect(bucketX,screenHeight-bucketH,bucketW,bucketH);
-    
-      fill(0);
-      noStroke();
-      ellipse(x, z, rad, rad);
-    }
-    
-    
-
     
     
   }//end of game start/playing
  
-  
-  
-  
 
 }//END OF DRAW
 
@@ -203,32 +175,58 @@ function draw() {
 function Fruit(x,y,r1,r2){
   this.x=x;
   this.y=y;
-  this.r=255;
-  this.g=0;
-  this.b=0;
-  this.alpha=255;
   this.rW=r1;
   this.rH=r2;
+
+  //Color and Type
+  var tmp= random(0,1);
+  console.log(this.type);
+  if(tmp>=.5){
+    this.type='good'
+    
+  }
+  else{
+    this.type='bad'
+  }
+  this.r=0;
+  this.g=0;
+  this.b=0;
+  
+  this.trans=255;
+
+  
+  
   this.selected = false;
-  this.firstPick = false;
   this.hover=false;
-  this.drawFruit = function(xNew, yNew){
-    fill(this.r, this.g, this.b, this.a);
+  
+  
+  
+  this.drawFruit = function(){
     noStroke();
-    if(this.hover){
+    if(this.hover&&!this.selected){
       stroke(255,255,0);
-      strokeWeight(4);
+      strokeWeight(2);
     }
     if(this.selected){
-      if(xNew && yNew){
-        this.x = xNew;
-        this.y=yNew;
+      this.trans-=10;
+      if(this.trans<=0){
+        console.log('respawn here');
       }
-    }//end of selected 
-    else if(this.firstPick && !this.selected && this.y<screenHeight-this.rH){
-        console.log('falling');
-        this.y+=0.5;
-      }
+  
+    }//end of selected
+    if(this.type=='good'){
+      this.r=255;
+      this.g=0;
+      this.b=0;
+      fill(this.r, this.g, this.b, this.trans);
+    }
+    else{
+      this.r=0;
+      this.g=0;
+      this.b=0;
+      fill(this.r, this.g, this.b, this.trans);
+
+    }
     ellipse(this.x, this.y, this.rW, this.rH);
     }//end of drawFruit
 }
@@ -246,6 +244,14 @@ function Tree(x,y,w,h){
   }
 }
 
+
+
+
+//COLLISION TESTING;
+function collision(otherX, otherY){
+  
+  
+}
 
 //Word Class
 function word(word,x,y,r,g,b){
@@ -268,6 +274,17 @@ function word(word,x,y,r,g,b){
   };
 }
 
+
+function keyTyped(){
+  if(!start && key=="s"){
+    start=true;
+  }
+  
+  
+}
+
+
+
 //LEAP MOTION STUFF
 
 // this function runs every time the leap provides us with hand tracking data
@@ -285,12 +302,7 @@ function handleHandData(frame) {
     y = map(hy,    0, 500, 500,   0);
     z = map(hz,    -170, 200, 0,   screenHeight);
     
-    if(checkFist(frame)){
-      fist=true;
-    }
-    else{
-      fist=false;
-    }
+   
   }
 }
 
@@ -333,10 +345,27 @@ function checkFist(hand){
 function handleGestures(gesture) {
 // console.log("got a gesture ...");
 // console.log(gesture.type);
-  if (gesture.type == 'screenTap') {
-  // console.log(gesture);
-   
+  if(gesture.type == 'keyTap'){
+    //madeTap=true;
+    if(!grid[thisX][thisY].selected){
+        grid[thisX][thisY].selected =true;
+       console.log('chosen fruit');
+       //Add score
+       //If poisonous - need to  stop affecting other apples? 
+        if(grid[thisX][thisY].type=='good'){
+          goodF++;
+        }
+        else{
+          badF++;
+        }
+    }
+  }
+  else{
+    madeTap=false;
+    console.log(madeTap);
   }
 }
+
+
 
 
