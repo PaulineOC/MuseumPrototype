@@ -46,12 +46,9 @@ function setup() {
   // text("apples", 700,130);
   // text("peaches", 700,250);
   // text("avocado", 700,400);
-<<<<<<< HEAD
   blank1 = new blank('_______', 320,250);
   var apples = new word('apples', 700,130);
-=======
   var apples = new word('apples', 650,160);
->>>>>>> 8275e3456c6dc9bbeb2130a71447ec285a6fec48
   choices.push(apples);
   var peaches = new word('peaches', 650,280);
   choices.push(peaches);
@@ -77,10 +74,7 @@ function draw() {
    // draw our text
   text("Sally wanted to pick", 160,250);
   
-<<<<<<< HEAD
-=======
   blank1 = new blank('_______', 360,250);
->>>>>>> 8275e3456c6dc9bbeb2130a71447ec285a6fec48
   blank1.drawText();
   
   
