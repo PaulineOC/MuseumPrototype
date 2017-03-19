@@ -5,8 +5,8 @@ var mapped_x = 0;
 var mapped_y = 0;
 var mapped_z= 0;
 
-var screenWidth = 1000;
-var screenHeight = 600;
+var screenWidth = 1280;
+var screenHeight = 800;
 
 var choices=[];
 
@@ -19,7 +19,7 @@ var curr_selected_word;
 var page1_finished= false;
 
 function preload(){
-  background_img = loadImage('background.png');
+  background_img = loadImage('pages1_2png');
 }
 
 function setup() {
@@ -46,12 +46,16 @@ function setup() {
   // text("apples", 700,130);
   // text("peaches", 700,250);
   // text("avocado", 700,400);
+<<<<<<< HEAD
   blank1 = new blank('_______', 320,250);
   var apples = new word('apples', 700,130);
+=======
+  var apples = new word('apples', 650,160);
+>>>>>>> 8275e3456c6dc9bbeb2130a71447ec285a6fec48
   choices.push(apples);
-  var peaches = new word('peaches', 700,250);
+  var peaches = new word('peaches', 650,280);
   choices.push(peaches);
-  var avocado = new word('avocado', 700,400);
+  var avocado = new word('avocado', 650,400);
   choices.push(avocado);
   
 
@@ -71,8 +75,12 @@ function draw() {
   // set a larger text size 
   textSize(20); 
    // draw our text
-  text("Sally wanted to pick", 130,250);
+  text("Sally wanted to pick", 160,250);
   
+<<<<<<< HEAD
+=======
+  blank1 = new blank('_______', 360,250);
+>>>>>>> 8275e3456c6dc9bbeb2130a71447ec285a6fec48
   blank1.drawText();
   
   
@@ -180,6 +188,8 @@ function blank(word,x,z){
     text(this.word,this.x,this.z);
   };
   
+  //alpha for fading out 
+  
   this.checkHit = function (){
   
   if(inRange(mapped_x, this.x)){
@@ -202,4 +212,6 @@ function inRange(mapped_val, word_pos){
   if(min < mapped_val && mapped_val < max){
     return true;
   }
+  // return false
+  return false;
 }
