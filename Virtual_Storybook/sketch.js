@@ -85,8 +85,6 @@ function draw() {
 
 
 //Leap Motion Stuff
-
-
 // this function runs every time the leap provides us with hand tracking data
 // it is passed a 'frame' object as an argument - we will dig into this object
 function handleHandData(frame) {

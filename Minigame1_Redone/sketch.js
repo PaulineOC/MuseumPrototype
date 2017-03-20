@@ -32,6 +32,7 @@ var thisX=null;
 var thisY=null;
 var goodF=0;
 var badF=0;
+var deathFactor=0;
 
 var timeDone=false;
 var time=10;
@@ -134,6 +135,8 @@ function draw() {
             else{
               grid[i][j].hover=false;
             }
+            
+            
             grid[i][j].drawFruit();
             //Apples die out
             grid[i][j].currLife++;
@@ -142,6 +145,7 @@ function draw() {
                 grid[i][j].alive=false;
             }
           }//end of alive
+          
           else{//not alive apple
             grid[i][j].currFrame++;
             if(grid[i][j].currFrame>=grid[i][j].targetFrame){
@@ -195,11 +199,14 @@ function Fruit(x,y,r1,r2){
   
   this.spawnFruit= function(firstTime){
     var tmp= random(0,2);
-    if(tmp>=.3){
+    if(tmp>=.5){
       this.type='good';
     }
     else{
-      this.type='bad'
+      this.type='bad';
+      deathFactor+=1.5;
+      console.log("adding bad apple "+deathFactor);
+
     }
     this.selected=false;
     // this.dying=false;
@@ -227,7 +234,7 @@ function Fruit(x,y,r1,r2){
         strokeWeight(2);
       }
       
-       this.trans-=.5;
+       this.trans-=.25*deathFactor;
         if(this.trans<=0){
             this.alive=false;
         }
@@ -273,8 +280,6 @@ function word(word,x,y,r,g,b){
   this.g=g;
   this.b=b;
   this.len=0;
-  //this.x2 = this.x+50;
-  //this.y2 =this.y+25;
   
   this.drawText = function(extraT){
     textSize(28);
@@ -297,16 +302,13 @@ function timer() {
   if(frameCount % 60 === 0) {
     time -= 1;
   }
-
-  if (time == 1) {
-    timeDone = true;
-  }
   
   if(time>=0){
     textSize(12);
     text("Seconds: " + time, 20, 50);
   }
   else{
+    timeDone = true;
     textSize(12);
     text("Seconds: " + 0, 20, 50);
   }
@@ -406,6 +408,11 @@ function mouseClicked(){
         }
         else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
           badF++;
+          deathFactor-=2;
+          if(deathFactor<=2){
+            deathFactor=2;
+          }
+          console.log("removing bad apple "+deathFactor);
         }
     }
   
