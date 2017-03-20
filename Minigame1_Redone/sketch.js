@@ -6,9 +6,11 @@ var leapController;
 var screenWidth;
 var screenHeight;
 
+
+
+//MY STUFF
 //Screen Offsets:
-var scoreOffsetW=200;
-var scoreOffsetH=200;
+var timerOffset=200;
 
 //set from previous game
 var fruitType='apricot';
@@ -24,7 +26,6 @@ function pg3loadAllImages(){
   //background image:
   background1Img=loadImage('assets/pg3-4/pages3_4.png');
   background2Img=loadImage('assets/pg3-4/pages3_4_tree.png');
-
   if(fruitType=="apple"){
     gameFruit=loadImage('assets/pg3-4/fruit/apple.png');
     gameFruitH=loadImage('assets/pg3-4/fruit/apple_hover.png');
@@ -40,6 +41,40 @@ function pg3loadAllImages(){
 }
 
 
+function pg3Open(){
+    image(background1Img,0,0,screenWidth, screenHeight);
+    greeting.drawText();
+}
+
+
+function pg3Setup(){
+  greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
+  
+  //Score
+  var goodScoreOffsetW=166+97.5;
+  var scoreH=screenHeight-150;
+  var badScoreOffsetW=screenWidth-166-292.5;
+  scoreGood= new word("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
+  scoreBad= new word("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
+  
+  //Fruit Grid
+  var gridX=195+166;
+  var gridY=200;
+  var boxSize=65;
+
+    grid = new Array();
+    for(var i=1;i<=gridW;i++){
+      grid[i]=new Array();
+      for(var j=1;j<=gridH;j++){
+        var radius=60;
+        grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
+      }
+    }
+}
+
+///EVERYTHING ABOVE IS CLEANED UP CLEAN UP
+
+
 //Game states
 var begin=true;
 var start=false;
@@ -47,15 +82,15 @@ var appleSuccess=0;
 var win=false;
 var greeting;
 
-
-
 var fist=false;
 
 
 //BOARD GAME STUFF
 
-var sizeG = 4;
+var gridW = 8;
+var gridH=3;
 var grid;
+
 var currObj=null
 var thisX=null;
 var thisY=null;
@@ -66,8 +101,6 @@ var deathFactor=0;
 var timeDone=false;
 var time=10;
 
-
-
 // x & y position of our user controlled character
 var x = 0;
 var z = 0;
@@ -77,17 +110,7 @@ var rad =0;
 function setup() {
   screenWidth = 1280;
   screenHeight = 800;
-  
   createCanvas(screenWidth, screenHeight);
-  
-
-  pg3loadAllImages();
-  
-  
-  //testing 
-  x=mouseX;
-  z=mouseY;
-
   // grab a connection to our output div
   outputDiv = select('#output');
   // set up our leap controller
@@ -99,51 +122,16 @@ function setup() {
   //handle gestures using a special function as well
   leapController.on("gesture", handleGestures);
   noStroke();
+  //GAME SETUP
+  pg3loadAllImages();
+  pg3Setup();
   
-  //Game overview:
-  greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
-
-//Actual Game:
-  //Score
-  var goodScoreOffsetW=166+97.5;
-  var scoreH=screenHeight-150;
-  var badScoreOffsetW=screenWidth-166-292.5;
-  
-  scoreGood= new word("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
-  scoreBad= new word("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
-  //Player control
-  x =50;
-  z = screenHeight/2;
-  rad=15;
-  
-  var gridX=screenWidth-550;
-  var gridY=250;
-  var boxSize=55;
-  //GRID:
-    grid = new Array();
-    for(var i=1;i<=sizeG;i++){
-      grid[i]=new Array();
-      for(var j=1;j<=sizeG;j++){
-        var radius=random(25,35);
-        grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
-      }
-    }
-    
-    
+  //testing 
+  x=mouseX;
+  z=mouseY;
 }//end of setup
 
 
-function pg3Open(){
-    image(background1Img,0,0,screenWidth, screenHeight);
-    greeting.drawText();
-}
-
-function pg3Game(){
-  image(background2Img,0,0,screenWidth,screenHeight);
-  timer();
-  image(gameFruitH,0,0,40,40);
-
-}
 
 function draw() {
   if(begin){
@@ -152,50 +140,6 @@ function draw() {
   
   if(start){
     pg3Game();
-    
-      //timer still running
-      scoreGood.drawText(goodF);
-      scoreBad.drawText(badF);
-      if(!timeDone){
-        
-        for(var i=1;i<=sizeG;i++){
-        for(var j=1;j<=sizeG;j++){
-          
-          if(grid[i][j].alive){
-            if(x<grid[i][j].x+grid[i][j].rW && x+rad>grid[i][j].x){
-              if(z<grid[i][j].y+grid[i][j].rH && z+rad>grid[i][j].y){
-               thisX=i;
-               thisY=j;
-               
-                if(!grid[i][j].selected && grid[i][j].alive && !grid[i][j].dying){
-                  grid[i][j].hover=true;
-                }
-              }
-            }
-            else{
-              grid[i][j].hover=false;
-            }
-            
-            
-            grid[i][j].drawFruit();
-            //Apples die out
-            grid[i][j].currLife++;
-            if(grid[i][j].currLife>=grid[i][j].lifeSpan){
-                grid[i][j].currLife=0;
-                grid[i][j].alive=false;
-            }
-          }//end of alive
-          
-          else{//not alive apple
-            grid[i][j].currFrame++;
-            if(grid[i][j].currFrame>=grid[i][j].targetFrame){
-                grid[i][j].spawnFruit();
-                grid[i][j].currFrame=0;
-            }
-          }
-        }//end of inner for
-      }//end of outer for
-    }//Timer
     
     fill(0);
     noStroke();
@@ -210,25 +154,12 @@ function draw() {
 }//END OF DRAW
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Game objects: 
 
 //Fruit
 function Fruit(x,y,r1,r2){
+  this.img=gameFruit;
+  this.imgH=gameFruitH;
   this.x=x;
   this.y=y;
   this.rW=r1;
@@ -237,19 +168,16 @@ function Fruit(x,y,r1,r2){
   this.alive=false;
   this.dying=false;
   
-  this.targetFrame = int(random(50,250));
-  this.currFrame=0;
-  
+  //Spawn wait
+  this.targetWait = int(random(50,250));
+  this.currWait=0;
+  //Life span
   this.lifeSpan=int(random(50,150));
   this.currLife=0;
   
   this.trans=255;
   this.type;
-  //Color
-  this.r=0;
-  this.g=0;
-  this.b=0;
-
+  
   this.selected = false;
   this.hover=false;
   
@@ -262,7 +190,6 @@ function Fruit(x,y,r1,r2){
       this.type='bad';
       deathFactor+=.5;
       // console.log("adding bad apple "+deathFactor);
-
     }
     this.selected=false;
     // this.dying=false;
@@ -270,47 +197,54 @@ function Fruit(x,y,r1,r2){
     this.trans=255;
     this.alive=true;
     if(!firstTime){
-      this.targetFrame=int(random(50,250));
+      this.targetWait=int(random(50,250));
       this.lifeSpan = int(random(200,500));
     }
   }//end of spawnFruit
   
+  
+  
   this.drawFruit = function(){
       noStroke();
+      this.trans-=.25*deathFactor;
+      //Natural Decay
+      if(this.trans<=0){
+            this.alive=false;
+      }
+      //Selected Fruit
       if(this.selected && this.alive){
         this.dying=true;
-        this.trans-=10;
+        this.trans-=2;
         if(this.trans<=0){
             this.alive=false;
         }
       }//end of selected
       
-      if(this.hover&&!this.selected && !this.dying && this.alive){
-        stroke(255,255,0);
-        strokeWeight(2);
-      }
-      
-       this.trans-=.25*deathFactor;
-        if(this.trans<=0){
-            this.alive=false;
-        }
-      
-      if(this.alive){
-        if(this.type=='good'){
-        this.r=255;
-        this.g=0;
-        this.b=0;
-        fill(this.r, this.g, this.b, this.trans);
+      if(this.type=='good' && this.alive){
+        if(this.hover&&!this.selected && !this.dying){//hovering over alive, unselected fruit 
+          tint(255,255);
+          image(this.imgH,this.x,this.y,this.rW,this.rH);
+          
         }
         else{
-          this.r=0;
-          this.g=0;
-          this.b=0;
-          fill(this.r, this.g, this.b, this.trans);
+            tint(255,this.trans);
+            image(this.img,this.x,this.y,this.rW,this.rH);
+        }
+        noTint();
       }
-        ellipse(this.x, this.y, this.rW, this.rH);
+      else if(this.type=='bad' && this.alive){
+        if(this.hover&&!this.selected && !this.dying ){//hovering over alive, unselected fruit 
+          tint(0,0,0,255);
+          image(this.imgH,this.x,this.y,this.rW,this.rH);
+          
+        }
+        else{
+            tint(0,0,0,this.trans);
+            image(this.img,this.x,this.y,this.rW,this.rH);
+        }
+        noTint();
       }
-  }
+  }//end of drawFruit;
 }
 
 
@@ -346,17 +280,60 @@ function timer() {
   if(frameCount % 60 === 0) {
     time -= 1;
   }
-  
   if(time>=0){
     textSize(28);
-    text("Seconds: " + time,  scoreOffsetW, scoreOffsetH);
+    text("Seconds: " + time,  timerOffset, timerOffset);
   }
   else{
     timeDone = true;
     textSize(28);
-    text("Seconds: " + 0, scoreOffsetW, scoreOffsetH);
+    text("Seconds: " + 0, timerOffset, timerOffset);
   }
   
+}
+
+function pg3Game(){
+  image(background2Img,0,0,screenWidth,screenHeight);
+  timer();
+  scoreGood.drawText(goodF);
+  scoreBad.drawText(badF);
+  
+  if(!timeDone){
+        
+        for(var i=1;i<=gridW;i++){
+          for(var j=1;j<=gridH;j++){
+            if(grid[i][j].alive){
+              if(x<grid[i][j].x+grid[i][j].rW && x+rad>grid[i][j].x){
+                if(z<grid[i][j].y+grid[i][j].rH && z+rad>grid[i][j].y){
+                 thisX=i;
+                 thisY=j;
+                  if(!grid[i][j].selected && grid[i][j].alive && !grid[i][j].dying){
+                    grid[i][j].hover=true;
+                  }
+                }
+              }//not intersecting
+              else{
+                grid[i][j].hover=false;
+              }
+              grid[i][j].drawFruit();
+              //Apples die out
+              grid[i][j].currLife++;
+              if(grid[i][j].currLife>=grid[i][j].lifeSpan){
+                  grid[i][j].currLife=0;
+                  grid[i][j].alive=false;
+              }
+            }//end of alive
+            
+            else{//not alive apple
+              grid[i][j].currWait++;
+              if(grid[i][j].currWait>=grid[i][j].targetWait){
+                  grid[i][j].spawnFruit();
+                  grid[i][j].currWait=0;
+            }
+          }
+        }//end of inner for
+      }//end of outer for
+    }//Timer
 }
 
 
@@ -430,6 +407,10 @@ function handleGestures(gesture) {
         }
         else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
           badF++;
+          deathFactor-=2;
+          if(deathFactor<=2){
+            deathFactor=2;
+          }
         }
     }
   }
@@ -439,7 +420,6 @@ function handleGestures(gesture) {
 }
 
 function mouseClicked(){
-  
   if(grid[thisX][thisY] && !grid[thisX][thisY].selected){
         grid[thisX][thisY].selected =true;
         grid[thisX][thisY].dying =true;
@@ -455,12 +435,8 @@ function mouseClicked(){
           if(deathFactor<=2){
             deathFactor=2;
           }
-          console.log("removing bad apple "+deathFactor);
         }
     }
-  
-  
-  
 }
 
 

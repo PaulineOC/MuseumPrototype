@@ -13,10 +13,10 @@ var rad=50;
 //Book Controls
 var frontCover=true;
 var pg1=false;
-var pg2=false;
 var pg3=false;
 var pg4=false;
 var backCover =false;
+
 
 //Extra Images
 
@@ -26,7 +26,9 @@ function setup() {
     screenWidth=1000;
     screenHeight=600;
     createCanvas(screenWidth, screenHeight);
-
+    `
+    
+    
   //Leap Motion Controller
     outputDiv = select('#output');
     // set up our leap controller
@@ -36,11 +38,15 @@ function setup() {
     leapController.loop( handleHandData );
     leapController.on("gesture", handleGestures);
     noStroke();
+    
+    
+
+
 }//end of setup
 
 function draw() {
   if(frontCover){
-    background(148);
+    //background(148);
     
   }
   else if(pg1){
@@ -51,21 +57,16 @@ function draw() {
       //show finished pg
     }
   }
-  else if(pg2){
-    if(pg2Start){
-      //start pg
-    }
-    else if(pg2Finished){
-      //show finished pg
-    }
-  }
   else if(pg3){
-    if(pg3Start){
-      //start pg
-    }
-    else if(pg3Finished){
-      //show finished pg
-    }
+    p3.Open();
+    // if(pg3Start){
+    //   if(pg3GameStart){
+    //     p3.game();
+    //   }
+    // }
+    // else if(pg3Finished){
+    //   //show finished pg
+    // }
   }
   else if(pg4){
     if(pg4Start){
@@ -81,6 +82,19 @@ function draw() {
   
 }//end of draw
 
+
+function keyTyped(){
+  if (key=="s"){
+    frontCover=false;
+    pg3=true;
+    pg3Start=true;
+  }
+  if(pg3Start && key =='a'){
+    
+      pg3GameStart=true;
+    }
+
+}
 
 
 
@@ -110,4 +124,28 @@ function handleGestures(gesture) {
   // console.log(gesture);
    
   }
-}
+  
+  if(pg3){
+    if(gesture.type == 'keyTap'){
+    //madeTap=true;
+      if(!grid[thisX][thisY].selected){
+          grid[thisX][thisY].selected =true;
+          grid[thisX][thisY].dying =true;
+          
+         //Add score
+         //If poisonous - need to  stop affecting other apples? 
+          if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
+            goodF++;
+          }
+          else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
+            badF++;
+            deathFactor-=2;
+            if(deathFactor<=2){
+              deathFactor=2;
+            }
+          }
+      }
+    }
+  }//pg3 
+  
+}//end of 
