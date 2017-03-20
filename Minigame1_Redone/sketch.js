@@ -1,11 +1,44 @@
-
-
+//Other Page Variables
 // our Leap motion hand sensor controller object (instantiated inside of 'setup');
 var leapController;
 
 //Screen Setup
 var screenWidth;
 var screenHeight;
+
+//Screen Offsets:
+var scoreOffsetW=200;
+var scoreOffsetH=200;
+
+//set from previous game
+var fruitType='apricot';
+
+//Images
+var background1Img;
+var background2Img;
+var gameFruit;
+var gameFruitH;
+
+
+function pg3loadAllImages(){
+  //background image:
+  background1Img=loadImage('assets/pg3-4/pages3_4.png');
+  background2Img=loadImage('assets/pg3-4/pages3_4_tree.png');
+
+  if(fruitType=="apple"){
+    gameFruit=loadImage('assets/pg3-4/fruit/apple.png');
+    gameFruitH=loadImage('assets/pg3-4/fruit/apple_hover.png');
+  }
+  else if(fruitType=='apricot'){
+    gameFruit=loadImage('assets/pg3-4/fruit/apricot.png');
+    gameFruitH=loadImage('assets/pg3-4/fruit/apricot_hover.png');
+  }
+  else{
+    gameFruit=loadImage('assets/pg3-4/fruit/cherry.png');
+    gameFruitH=loadImage('assets/pg3-4/fruit/_hover.png');
+  }
+}
+
 
 //Game states
 var begin=true;
@@ -15,12 +48,8 @@ var win=false;
 var greeting;
 
 
-var fist=false;
 
-//Images
-var img;
-var img2;
-var backgroundImg
+var fist=false;
 
 
 //BOARD GAME STUFF
@@ -37,24 +66,28 @@ var deathFactor=0;
 var timeDone=false;
 var time=10;
 
-//Other Game Objects
-var tree;
-var fruitType='apples';
 
 
 // x & y position of our user controlled character
-var x = mouseX;
-var z = mouseY;
+var x = 0;
+var z = 0;
 var rad =0;
 
 
 function setup() {
-  screenWidth = 1000;
-  screenHeight = 700;
+  screenWidth = 1280;
+  screenHeight = 800;
   
   createCanvas(screenWidth, screenHeight);
-  //background image:
-  backgroundImg=loadImage('assets/background.png');
+  
+
+  pg3loadAllImages();
+  
+  
+  //testing 
+  x=mouseX;
+  z=mouseY;
+
   // grab a connection to our output div
   outputDiv = select('#output');
   // set up our leap controller
@@ -69,20 +102,20 @@ function setup() {
   
   //Game overview:
   greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
-  //Hand test
-  img2 = loadImage('assets/hand2.png');
-  
 
 //Actual Game:
   //Score
-  scoreGood= new word("Good "+fruitType+"s:", windowWidth/4,windowHeight/4,0,0,255);
-  scoreBad= new word("Bad "+fruitType+"s:", windowWidth/4,windowHeight/2,0,0,255);
+  var goodScoreOffsetW=166+97.5;
+  var scoreH=screenHeight-150;
+  var badScoreOffsetW=screenWidth-166-292.5;
+  
+  scoreGood= new word("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
+  scoreBad= new word("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
   //Player control
   x =50;
   z = screenHeight/2;
   rad=15;
   
-  var tmpCount=0;
   var gridX=screenWidth-550;
   var gridY=250;
   var boxSize=55;
@@ -93,26 +126,33 @@ function setup() {
       for(var j=1;j<=sizeG;j++){
         var radius=random(25,35);
         grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
-        tmpCount++;
       }
     }
-    //Tree
-    img = loadImage('assets/tree.png');
-    tree = new Tree(screenWidth-550,150);
+    
+    
+}//end of setup
+
+
+function pg3Open(){
+    image(background1Img,0,0,screenWidth, screenHeight);
+    greeting.drawText();
+}
+
+function pg3Game(){
+  image(background2Img,0,0,screenWidth,screenHeight);
+  timer();
+  image(gameFruitH,0,0,40,40);
+
 }
 
 function draw() {
   if(begin){
-    background(149);
-    greeting.drawText();
-    //tint(0, 0, 0, 25);  // Tint blue and set transparency
-    //image(img2,500,500);
+    pg3Open();
   }
+  
   if(start){
-      
-      image(backgroundImg,0,0);
-      timer();
-      
+    pg3Game();
+    
       //timer still running
       scoreGood.drawText(goodF);
       scoreBad.drawText(badF);
@@ -169,6 +209,22 @@ function draw() {
 
 }//END OF DRAW
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Game objects: 
 
 //Fruit
@@ -204,8 +260,8 @@ function Fruit(x,y,r1,r2){
     }
     else{
       this.type='bad';
-      deathFactor+=1.5;
-      console.log("adding bad apple "+deathFactor);
+      deathFactor+=.5;
+      // console.log("adding bad apple "+deathFactor);
 
     }
     this.selected=false;
@@ -257,18 +313,6 @@ function Fruit(x,y,r1,r2){
   }
 }
 
-//Tree
-function Tree(x,y,w,h){
-  this.x=x;
-  this.y=y;
-  this.wOffset = 85;
-  this.hOffset=78;
-  this.w=this.x+430+this.wOffset;
-  this.h=this.y+232+this.hOffset;
-  this.drawTree = function(){
-    image(img,x,y);
-  }
-}
 
 
 //Word Class
@@ -304,13 +348,13 @@ function timer() {
   }
   
   if(time>=0){
-    textSize(12);
-    text("Seconds: " + time, 20, 50);
+    textSize(28);
+    text("Seconds: " + time,  scoreOffsetW, scoreOffsetH);
   }
   else{
     timeDone = true;
-    textSize(12);
-    text("Seconds: " + 0, 20, 50);
+    textSize(28);
+    text("Seconds: " + 0, scoreOffsetW, scoreOffsetH);
   }
   
 }
@@ -369,7 +413,6 @@ function checkFist(hand){
        return false;
    }
 }
-
 
 // our function to handle gestures
 function handleGestures(gesture) {
