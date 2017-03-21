@@ -13,87 +13,92 @@ var rad=50;
 //Book Controls
 var frontCover=true;
 var pg1=false;
-var pg3=false;
-var pg4=false;
+// var pg3=false;
+// var pg4=false;
 var backCover =false;
 
+// images
+var front_cover_img;
+var back_cover_img;
+var page1_background;
 
-//Extra Images
 
+//Load Images
+function preload(){
+  front_cover_img = loadImage('assets/start/book_front_cover.png');
+  back_cover_img = loadImage('assets/end/book_back_cover.png');
+  page1_background = loadImage('assets/page1/pages1_2.png');
+}
 
 function setup() {
   //Screen Setup
     screenWidth=1000;
     screenHeight=600;
+    
     createCanvas(screenWidth, screenHeight);
-    `
-    
-    
-  //Leap Motion Controller
     outputDiv = select('#output');
-    // set up our leap controller
+    //set up our leap controller
     leapController = new Leap.Controller({
       enableGestures: true
     });
+    
     leapController.loop( handleHandData );
     leapController.on("gesture", handleGestures);
     noStroke();
     
     
+    // setup page1
+    page1setup();
+    
+    // setup page3
+    
 
+}
 
-}//end of setup
 
 function draw() {
   if(frontCover){
-    //background(148);
-    
+    background(front_cover_img);
   }
   else if(pg1){
-    if(pg1Start){
-      //start pg
-    }
-    else if(pg1Finished){
-      //show finished pg
-    }
-  }
-  else if(pg3){
-    p3.Open();
-    // if(pg3Start){
-    //   if(pg3GameStart){
-    //     p3.game();
-    //   }
-    // }
-    // else if(pg3Finished){
-    //   //show finished pg
-    // }
-  }
-  else if(pg4){
-    if(pg4Start){
-      //start pg
-    }
-    else if(pg4Finished){
-      //show finished pg
+    if(!page1_finished){
+      //start pg1
+      background(page1_background);
+      page1draw();
     }
   }
-  else if(backCover){
+  // else if(pg3){
+  //   p3.Open();
+  //   // if(pg3Start){
+  //   //   if(pg3GameStart){
+  //   //     p3.game();
+  //   //   }
+  //   // }
+  //   // else if(pg3Finished){
+  //   //   //show finished pg
+  //   // }
+  // }
+  // else if(pg4){
+  //   if(pg4Start){
+  //     //start pg
+  //   }
+  //   else if(pg4Finished){
+  //     //show finished pg
+  //   }
+  // }
+  // else if(backCover){
     
-  }
+  // }
   
 }//end of draw
 
 
 function keyTyped(){
-  if (key=="s"){
-    frontCover=false;
-    pg3=true;
-    pg3Start=true;
+  // keypress for page1
+  if (key=="o"){
+    frontCover= false;
+    pg1= true;
   }
-  if(pg3Start && key =='a'){
-    
-      pg3GameStart=true;
-    }
-
 }
 
 
@@ -132,8 +137,8 @@ function handleGestures(gesture) {
           grid[thisX][thisY].selected =true;
           grid[thisX][thisY].dying =true;
           
-         //Add score
-         //If poisonous - need to  stop affecting other apples? 
+        //Add score
+        //If poisonous - need to  stop affecting other apples? 
           if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
             goodF++;
           }

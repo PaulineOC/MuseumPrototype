@@ -18,36 +18,11 @@ var curr_selected_word;
 // detects if user should move on to next page
 var page1_finished= false;
 
+var excerpt = "Sally wanted to pick";
 
 
-function preload(){
-  background_img = loadImage('pages1_2png');
-}
+function page1setup() {
 
-function setup() {
-  createCanvas(screenWidth,screenHeight);
-  
-    // set up our leap controller
-  leapController = new Leap.Controller({
-    enableGestures: true
-  });
-  
-  // every time the Leap provides us with hand data we will ask it to run this function
-  leapController.loop( handleHandData );
-  
-  // handle gestures using a special function as well
-  leapController.on("gesture", handleGestures);
-  
-  
-  
-  // WORD CHOICE OPTIONS
-   // set font
-  // textFont("Helvetica");
-  // // set a larger text size 
-  // textSize(20); 
-  // text("apples", 700,130);
-  // text("peaches", 700,250);
-  // text("avocado", 700,400);
   blank1 = new blank('_______', 320,250);
   var apples = new word('apples', 700,130);
   var apples = new word('apples', 650,160);
@@ -57,16 +32,16 @@ function setup() {
   var avocado = new word('avocado', 650,400);
   choices.push(avocado);
   
-
-  
 }
 
-function draw() {
+
+
+function page1draw() {
   // color of text
   fill(0,0,0);
   
   //background
-  background(background_img);
+  //background(background_img);
   
   // WRITE EXCERPT
   // set font
@@ -74,7 +49,7 @@ function draw() {
   // set a larger text size 
   textSize(20); 
    // draw our text
-  text("Sally wanted to pick", 160,250);
+  text(excerpt, 160,250);
   
   blank1 = new blank('_______', 360,250);
   blank1.drawText();
