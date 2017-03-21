@@ -5,9 +5,6 @@ var leapController;
 //Screen Setup
 var screenWidth;
 var screenHeight;
-
-
-
 //MY STUFF
 //Screen Offsets:
 var timerOffset=200;
@@ -104,12 +101,12 @@ var time=10;
 // x & y position of our user controlled character
 var x = 0;
 var z = 0;
-var rad =0;
+var rad =30;
 
 
 function setup() {
   screenWidth = 1280;
-  screenHeight = 800;
+  screenHeight = 1024;
   createCanvas(screenWidth, screenHeight);
   // grab a connection to our output div
   outputDiv = select('#output');
@@ -126,9 +123,9 @@ function setup() {
   pg3loadAllImages();
   pg3Setup();
   
-  //testing 
-  x=mouseX;
-  z=mouseY;
+  // //testing 
+  // x=mouseX;
+  // z=mouseY;
 }//end of setup
 
 
@@ -141,11 +138,9 @@ function draw() {
   if(start){
     pg3Game();
     
-    fill(0);
-    noStroke();
-    ellipse(mouseX, mouseY, rad, rad);
-    x=mouseX;
-    z=mouseY;
+   
+    // x=mouseX;
+    // z=mouseY;
     
     
   }//end of game start/playing
@@ -201,8 +196,7 @@ function Fruit(x,y,r1,r2){
       this.lifeSpan = int(random(200,500));
     }
   }//end of spawnFruit
-  
-  
+
   
   this.drawFruit = function(){
       noStroke();
@@ -299,6 +293,7 @@ function pg3Game(){
   scoreBad.drawText(badF);
   
   if(!timeDone){
+    console.log('in timer not done');
         
         for(var i=1;i<=gridW;i++){
           for(var j=1;j<=gridH;j++){
@@ -333,7 +328,16 @@ function pg3Game(){
           }
         }//end of inner for
       }//end of outer for
+      
+    fill(0);
+    noStroke();
+    ellipse(x,z, rad, rad);
+   
     }//Timer
+    
+    fill(0);
+    noStroke();
+    ellipse(x,z, rad, rad);
 }
 
 
@@ -352,7 +356,9 @@ function handleHandData(frame) {
     var hz = handPosition[2];
     // x is left-right, y is up-down, z is forward-back
     x = map(hx, -250, 195, 0, screenWidth);
+    console.log(x);
     y = map(hy,    0, 500, 500,   0);
+    console.log(z);
     z = map(hz,    -170, 200, 0,   screenHeight);
   }
 }
@@ -395,7 +401,7 @@ function checkFist(hand){
 function handleGestures(gesture) {
 
   if(gesture.type == 'keyTap'){
-    //madeTap=true;
+    madeTap=true;
     if(!grid[thisX][thisY].selected){
         grid[thisX][thisY].selected =true;
         grid[thisX][thisY].dying =true;

@@ -4,59 +4,94 @@ var screenHeight;
 
 //Leap Motion Controller
 var leapController;
+var pinch=true;
 
 //Player Navigator
 var pX=screenWidth/2
-var pY=screenHeight-(2*rad); //change to size of image
-var rad=50;
+var pZ=screenHeight-(2*rad); //change to size of image
+var rad=30;
 
 //Book Controls
+var currPage=0;
+
+
 var frontCover=true;
 var pg1=false;
 // var pg3=false;
+var chosenFruit;
 // var pg4=false;
 var backCover =false;
+//Hotspot transparency
+var trans=250;
+var fall=true;
+
 
 // images
 var front_cover_img;
 var back_cover_img;
 var page1_background;
+//var p1_backgroundApple;
 
+var pg3background1;
+var pg3background2;
+var pg3background3;
+var apple;
+var appleH;
+var apricot;
+var apricotH;
+var cherry;
+var cherryH;
 
 //Load Images
 function preload(){
   front_cover_img = loadImage('assets/start/book_front_cover.png');
   back_cover_img = loadImage('assets/end/book_back_cover.png');
+  //Page1 Stuff
   page1_background = loadImage('assets/page1/pages1_2.png');
+  //Page 3 background complete
+  
+  
+  //Page3 Stuff
+  pg3background1=loadImage('assets/page3/pages3_4.png');
+  pg3background2=loadImage('assets/page3/pages3_4_tree.png');
+  //pg3background3=loadImage('assets/page3/');
+  apple=loadImage('assets/page3/fruit/apple.png');
+  appleH=loadImage('assets/page3/fruit/apple_hover.png');
+  apricot=loadImage('assets/page3/fruit/apricot.png');
+  apricotH=loadImage('assets/page3/fruit/apricot_hover.png');
+  cherry=loadImage('assets/page3/fruit/cherries.png');
+  cherryH=loadImage('assets/page3/fruit/cherry_hover.png');
+  //Page 3 background complete
 }
 
 function setup() {
   //Screen Setup
-    screenWidth=1000;
-    screenHeight=600;
-    
+    screenWidth=1280;
+    screenHeight=1024;
     createCanvas(screenWidth, screenHeight);
+    
+  //Page setups
+    page1setup();
+    //setup page3
+    
+  //Leap stuff
     outputDiv = select('#output');
     //set up our leap controller
     leapController = new Leap.Controller({
       enableGestures: true
     });
-    
     leapController.loop( handleHandData );
     leapController.on("gesture", handleGestures);
     noStroke();
-  
-    
-    // setup page1
-    page1setup();
-    
-    // setup page3
-    
-
 }
 
-
 function draw() {
+  
+  
+  
+  
+  
+  
   if(frontCover){
     background(front_cover_img);
   }
@@ -67,42 +102,19 @@ function draw() {
       page1draw();
     }
     else{
+      chosenFruit=curr_selected_word.word;
       background(page1_background);
-          // guiding circle
-           // draw our text
-      fill(0);
-      text(excerpt, 160,250);
+      text(pg1Excerpt);
+      hotSpot();
       fill(255,100,100,50); // set color
       noStroke();
-      ellipse(mapped_x, mapped_z, 60);
-      // load the tree with fruit 
+      ellipse(pX, pZ, 50);
       
-      // point user to go on to next page 
-
+      //console.log(pg1pg1Excerpt);
+      //load other background
     }
   }
-  // else if(pg3){
-  //   p3.Open();
-  //   // if(pg3Start){
-  //   //   if(pg3GameStart){
-  //   //     p3.game();
-  //   //   }
-  //   // }
-  //   // else if(pg3Finished){
-  //   //   //show finished pg
-  //   // }
-  // }
-  // else if(pg4){
-  //   if(pg4Start){
-  //     //start pg
-  //   }
-  //   else if(pg4Finished){
-  //     //show finished pg
-  //   }
-  // }
-  // else if(backCover){
-    
-  // }
+ 
   
 }//end of draw
 
@@ -115,6 +127,42 @@ function keyTyped(){
   }
 }
 
+
+function hotSpot(){
+    var h1OffW=166+50
+    var h2OffW=screenWidth-166-50;
+    var hOffH=screenHeight-150;
+    var radius=50;
+    
+    if(fall){
+      trans-=2;
+      if(trans<=0){
+        fall=false;;
+      }
+    }
+    else{
+      trans+=2;
+      if(trans>=250){
+        fall=true;
+      }
+    }
+    fill(0,0,0,trans);
+    ellipse(h1OffW,hOffH,radius,radius);
+    ellipse(h2OffW,hOffH,radius,radius);
+    
+    //Collision w/ Left H0
+    if(pX<h1OffW+radius && pX+rad>h1OffW && pZ<hOffH+radius && pZ+rad>hOffH ){
+        
+        console.log('REALLY CONECTING');
+  
+      
+    }
+    else if(pX<h2OffW+radius && pX+rad>h2OffW && pZ<hOffH+radius && pZ+rad>hOffH){
+      console.log('hi2');
+    }
+        
+
+}
 
 
 //Leap Motion Stuff
@@ -129,55 +177,20 @@ function handleHandData(frame) {
     var hy = handPosition[1];
     var hz = handPosition[2];
     // x is left-right, y is up-down, z is forward-back
-    x = map(hx, -250, 195, 0, screenWidth);
-    y = map(hy,    0, 500, 500,   0);
-    z = map(hz,    -170, 200, 0,   screenHeight);
+    pX = map(hx, -200, 150, 166, screenWidth-166);
+    pY = map(hy,    0, 500, 500,   0);
+    pZ = map(hz,    -5, 70, 150,   screenHeight-150);
   }
 }
 
-// our function to handle gestures
+
 function handleGestures(gesture) {
-  
   if(pg1){
     if (gesture.type == 'keyTap') {
-      if(curr_selected_word != null){
-        curr_selected_word.moveText(blank1.x,blank1.z);
-        // make other selections disappear
-        for(var i = 0; i < choices.length; i++){
-          if(choices[i].word != curr_selected_word.word){
-            choices[i].moveText(2000,2000);
-          }
-        } // end of for
-         excerpt+=' '+curr_selected_word.word;
-        page1_finished = true;
-      }// end of if
+      tapped=true;
     }
-    
-  }
-  
-  
-  
-  // if(pg3){
-  //   if(gesture.type == 'keyTap'){
-  //   //madeTap=true;
-  //     if(!grid[thisX][thisY].selected){
-  //         grid[thisX][thisY].selected =true;
-  //         grid[thisX][thisY].dying =true;
-          
-  //       //Add score
-  //       //If poisonous - need to  stop affecting other apples? 
-  //         if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
-  //           goodF++;
-  //         }
-  //         else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
-  //           badF++;
-  //           deathFactor-=2;
-  //           if(deathFactor<=2){
-  //             deathFactor=2;
-  //           }
-  //         }
-  //     }
-  //   }
-  // }//pg3 
-  
+    else{
+      tapped=false;
+    }
+  }//pg1 controls
 }//end of 
