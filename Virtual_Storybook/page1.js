@@ -43,9 +43,8 @@ function page1draw() {
     for(var i = 0; i < choices.length; i++){
       choices[i].drawText();
     }
-    fill(255,100,100,50); // set color
-    noStroke();
-    ellipse(pX, pZ, 50);
+    drawPlayer();
+
   }
   
   for(var i = 0; i < choices.length; i++){

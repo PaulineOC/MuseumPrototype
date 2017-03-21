@@ -4,12 +4,12 @@ var screenHeight;
 
 //Leap Motion Controller
 var leapController;
-var pinch=true;
+var pageMove=false;
 
 //Player Navigator
 var pX=screenWidth/2
 var pZ=screenHeight-(2*rad); //change to size of image
-var rad=30;
+var rad=35;
 
 //Book Controls
 var currPage=0;
@@ -86,49 +86,47 @@ function setup() {
 }
 
 function draw() {
-  
-  
-  
-  
-  
-  
-  if(frontCover){
-    background(front_cover_img);
-  }
-  else if(pg1){
-    if(!page1_finished){
-      //start pg1
-      background(page1_background);
-      page1draw();
-    }
-    else{
-      chosenFruit=curr_selected_word.word;
-      background(page1_background);
-      text(pg1Excerpt);
-      hotSpot();
-      fill(255,100,100,50); // set color
-      noStroke();
-      ellipse(pX, pZ, 50);
+  switch(currPage){
+    case 0:
+      background(front_cover_img);
+      drawPlayer();
+      hotSpot(currPage);
+      break;
+    case 1:
+      if(!page1_finished){
+        background(page1_background);
+        page1draw();
+      } 
+      else{
+        chosenFruit=curr_selected_word.word;
+        background(page1_background);//load other background
+        drawPlayer();
+        text(pg1Excerpt);
+        hotSpot();
       
-      //console.log(pg1pg1Excerpt);
-      //load other background
-    }
+      }
+      break;
+    case 2:
+      console.log('paulines page');
   }
- 
-  
-}//end of draw
-
+}
 
 function keyTyped(){
   // keypress for page1
   if (key=="o"){
-    frontCover= false;
-    pg1= true;
+    currPage++;
+    // frontCover= false;
+    // pg1= true;
   }
 }
 
+function drawPlayer(){
+  fill(255,100,100,150); // set color
+  noStroke();
+  ellipse(pX, pZ, rad);
+}
 
-function hotSpot(){
+function hotSpot(numb){
     var h1OffW=166+50
     var h2OffW=screenWidth-166-50;
     var hOffH=screenHeight-150;
@@ -146,22 +144,25 @@ function hotSpot(){
         fall=true;
       }
     }
-    fill(0,0,0,trans);
-    ellipse(h1OffW,hOffH,radius,radius);
-    ellipse(h2OffW,hOffH,radius,radius);
     
     //Collision w/ Left H0
-    if(pX<h1OffW+radius && pX+rad>h1OffW && pZ<hOffH+radius && pZ+rad>hOffH ){
-        
-        console.log('REALLY CONECTING');
-  
-      
+    if(numb!==0 && pX<h1OffW+radius && pX+rad>h1OffW && pZ<hOffH+radius && pZ+rad>hOffH && pageMove){
+        currPage--;
     }
-    else if(pX<h2OffW+radius && pX+rad>h2OffW && pZ<hOffH+radius && pZ+rad>hOffH){
-      console.log('hi2');
+    else if(numb!==4 && pX<h2OffW+radius && pX+rad>h2OffW && pZ<hOffH+radius && pZ+rad>hOffH && pageMove){
+      currPage++;
     }
-        
-
+    fill(0,0,0,trans);
+    if(numb==0){//title cover
+      ellipse(h2OffW-50,hOffH+25,radius,radius);
+    }
+    else if(numb==4){//back cover
+      ellipse(h1OffW,hOffH,radius,radius);
+    }
+    else{
+        ellipse(h1OffW,hOffH,radius,radius);
+        ellipse(h2OffW,hOffH,radius,radius);
+    }
 }
 
 
@@ -185,12 +186,27 @@ function handleHandData(frame) {
 
 
 function handleGestures(gesture) {
-  if(pg1){
-    if (gesture.type == 'keyTap') {
+
+  switch(currPage){
+    case 0:
+       if(gesture.type=='keyTap'){
+        //console.log("his");
+        pageMove=true;
+      }
+      else{
+        pageMove=false;
+      }
+      break;
+    case 1:
+      if (gesture.type == 'keyTap') {
       tapped=true;
-    }
-    else{
-      tapped=false;
-    }
-  }//pg1 controls
-}//end of 
+      pageMove;
+      }
+      else{
+        tapped=false;
+        pageMove=false;
+      }
+      break;
+  }
+ 
+}
