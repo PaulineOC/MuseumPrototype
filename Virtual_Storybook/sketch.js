@@ -45,7 +45,7 @@ function setup() {
     leapController.loop( handleHandData );
     leapController.on("gesture", handleGestures);
     noStroke();
-    
+  
     
     // setup page1
     page1setup();
@@ -65,6 +65,20 @@ function draw() {
       //start pg1
       background(page1_background);
       page1draw();
+    }
+    else{
+      background(page1_background);
+          // guiding circle
+           // draw our text
+      fill(0);
+      text(excerpt, 160,250);
+      fill(255,100,100,50); // set color
+      noStroke();
+      ellipse(mapped_x, mapped_z, 60);
+      // load the tree with fruit 
+      
+      // point user to go on to next page 
+
     }
   }
   // else if(pg3){
@@ -123,34 +137,47 @@ function handleHandData(frame) {
 
 // our function to handle gestures
 function handleGestures(gesture) {
-// console.log("got a gesture ...");
-// console.log(gesture.type);
-  if (gesture.type == 'screenTap') {
-  // console.log(gesture);
-   
+  
+  if(pg1){
+    if (gesture.type == 'keyTap') {
+      if(curr_selected_word != null){
+        curr_selected_word.moveText(blank1.x,blank1.z);
+        // make other selections disappear
+        for(var i = 0; i < choices.length; i++){
+          if(choices[i].word != curr_selected_word.word){
+            choices[i].moveText(2000,2000);
+          }
+        } // end of for
+         excerpt+=' '+curr_selected_word.word;
+        page1_finished = true;
+      }// end of if
+    }
+    
   }
   
-  if(pg3){
-    if(gesture.type == 'keyTap'){
-    //madeTap=true;
-      if(!grid[thisX][thisY].selected){
-          grid[thisX][thisY].selected =true;
-          grid[thisX][thisY].dying =true;
+  
+  
+  // if(pg3){
+  //   if(gesture.type == 'keyTap'){
+  //   //madeTap=true;
+  //     if(!grid[thisX][thisY].selected){
+  //         grid[thisX][thisY].selected =true;
+  //         grid[thisX][thisY].dying =true;
           
-        //Add score
-        //If poisonous - need to  stop affecting other apples? 
-          if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
-            goodF++;
-          }
-          else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
-            badF++;
-            deathFactor-=2;
-            if(deathFactor<=2){
-              deathFactor=2;
-            }
-          }
-      }
-    }
-  }//pg3 
+  //       //Add score
+  //       //If poisonous - need to  stop affecting other apples? 
+  //         if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
+  //           goodF++;
+  //         }
+  //         else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
+  //           badF++;
+  //           deathFactor-=2;
+  //           if(deathFactor<=2){
+  //             deathFactor=2;
+  //           }
+  //         }
+  //     }
+  //   }
+  // }//pg3 
   
 }//end of 

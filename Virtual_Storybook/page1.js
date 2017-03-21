@@ -24,12 +24,11 @@ var excerpt = "Sally wanted to pick";
 function page1setup() {
 
   blank1 = new blank('_______', 320,250);
-  var apples = new word('apples', 700,130);
   var apples = new word('apples', 650,160);
   choices.push(apples);
-  var peaches = new word('peaches', 650,280);
+  var peaches = new word('cherries', 650,280);
   choices.push(peaches);
-  var avocado = new word('avocado', 650,400);
+  var avocado = new word('apricots', 650,400);
   choices.push(avocado);
   
 }
@@ -61,11 +60,14 @@ function page1draw() {
   }
 
   // guiding circle
-  fill(255,100,100,50); // set color
-  noStroke();
-  ellipse(mapped_x, mapped_z, 60);
+  if(!page1_finished){
+    fill(255,100,100,50); // set color
+    noStroke();
+    ellipse(mapped_x, mapped_z, 60);
+  }
+  
   for(var i = 0; i < choices.length; i++){
-    choices[i].checkHit();
+  choices[i].checkHit();
   }
   
 }
@@ -96,21 +98,10 @@ function handleHandData(frame) {
   }
 }
 
-// our function to handle gestures
-function handleGestures(gesture) {
-  if (gesture.type == 'keyTap') {
-    //curr_selected_word
-    if(curr_selected_word != null){
-      curr_selected_word.moveText(blank1.x,blank1.z);
-      // make other selections disappear
-      for(var i = 0; i < choices.length; i++){
-        if(choices[i].word != curr_selected_word.word){
-          choices[i].moveText(2000,2000);
-        }
-      } // end of for
-    }// end of if
-  }
-}
+// // our function to handle gestures
+// function handleGestures(gesture) {
+  
+// }
 
 //Word Class
 function word(word,x,z){
@@ -167,7 +158,6 @@ function blank(word,x,z){
     if(inRange(mapped_z, this.z)){
      // register hit
      curr_selected_blank = this;
-     
     } 
   }
 }
