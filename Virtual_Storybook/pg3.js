@@ -9,6 +9,7 @@ var appleSuccess=0;
 var win=false;
 var greeting;
 var fist=false;
+
 //BOARD GAME STUFF
 var gridW = 8;
 var gridH=3;
@@ -40,26 +41,7 @@ var gameFruit;
 var gameFruitH;
 
 
-
 //SET UP
-function pg3loadAllImages(){
-  //background image:
-  background1Img=loadImage('assets/pg3-4/pages3_4.png');
-  background2Img=loadImage('assets/pg3-4/pages3_4_tree.png');
-  if(fruitType=="apple"){
-    gameFruit=loadImage('assets/pg3-4/fruit/apple.png');
-    gameFruitH=loadImage('assets/pg3-4/fruit/apple_hover.png');
-  }
-  else if(fruitType=='apricot'){
-    gameFruit=loadImage('assets/pg3-4/fruit/apricot.png');
-    gameFruitH=loadImage('assets/pg3-4/fruit/apricot_hover.png');
-  }
-  else{
-    gameFruit=loadImage('assets/pg3-4/fruit/cherry.png');
-    gameFruitH=loadImage('assets/pg3-4/fruit/_hover.png');
-  }
-}
-
 
 function pg3Setup(){
   greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
