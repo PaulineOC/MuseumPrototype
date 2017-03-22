@@ -14,7 +14,6 @@ var rad=35;
 //Book Controls
 var currPage=0;
 
-
 var frontCover=true;
 var pg1=false;
 // var pg3=false;
@@ -32,9 +31,10 @@ var back_cover_img;
 var page1_background;
 //var p1_backgroundApple;
 
-var pg3background1;
-var pg3background2;
-var pg3background3;
+var pg3backgroundGame;
+var pg3backgroundApple;
+var pg3backgroundApricot;
+var pg3backgroundCherry;
 var apple;
 var appleH;
 var apricot;
@@ -52,8 +52,7 @@ function preload(){
   
   
   //Page3 Stuff
-  pg3background1=loadImage('assets/page3/pages3_4.png');
-  pg3background2=loadImage('assets/page3/pages3_4_tree.png');
+  pg3backgroundGame=loadImage('assets/page3/pages3_4_tree.png');
   //pg3background3=loadImage('assets/page3/');
   apple=loadImage('assets/page3/fruit/apple.png');
   appleH=loadImage('assets/page3/fruit/apple_hover.png');
@@ -73,6 +72,7 @@ function setup() {
   //Page setups
     page1setup();
     //setup page3
+    pg3Setup();
     
   //Leap stuff
     outputDiv = select('#output');
@@ -89,34 +89,78 @@ function draw() {
   switch(currPage){
     case 0:
       background(front_cover_img);
-      drawPlayer();
       hotSpot(currPage);
+      drawPlayer();
       break;
     case 1:
       if(!page1_finished){
         background(page1_background);
-        page1draw();
+       page1draw();
       } 
       else{
         chosenFruit=curr_selected_word.word;
         background(page1_background);//load other background
+        fill(0);
+        text(pg1Excerpt,160,250);
+        hotSpot(currPage);
         drawPlayer();
-        text(pg1Excerpt);
-        hotSpot();
-      
       }
       break;
     case 2:
-      console.log('paulines page');
+      if(!pg3GameStart && !pg3Finished){
+         if(chosenFruit=='apples'){
+          background(page1_background);//load bkgd w/ apples
+          greeting.drawText();
+
+        }
+        else if(chosenFruit=='apricots'){
+          background(page1_background);//load bkgd w/ apricots
+          greeting.drawText();
+
+        }
+        else{
+          background(page1_background);//load bkgrd w/ peaches
+          greeting.drawText();
+        }
+      }
+      else if(pg3GameStart){
+        background(pg3backgroundGame);
+        game();
+      }
+      else if(!pg3GameStart && pg3Finished){
+        hotSpot(currPage);
+        drawPlayer();
+
+      }//end of else
+      break;
+    default: 
+      background(0);
+      break;
   }
 }
 
 function keyTyped(){
   // keypress for page1
   if (key=="o"){
-    currPage++;
-    // frontCover= false;
-    // pg1= true;
+    if(currPage==1){
+      if(!page1_finished){
+        curr_selected_word=choices[0];//forced choices
+        page1_finished=true;
+      }
+      else{
+        currPage++;
+      }
+    }
+    else if(currPage==2){
+      if(!pg3GameStart){
+        pg3GameStart=true;
+      }
+      
+    }
+    else{
+      currPage++;
+    }
+    //currPage++;
   }
 }
 
@@ -145,13 +189,15 @@ function hotSpot(numb){
       }
     }
     
+       
     //Collision w/ Left H0
     if(numb!==0 && pX<h1OffW+radius && pX+rad>h1OffW && pZ<hOffH+radius && pZ+rad>hOffH && pageMove){
         currPage--;
     }
-    else if(numb!==4 && pX<h2OffW+radius && pX+rad>h2OffW && pZ<hOffH+radius && pZ+rad>hOffH && pageMove){
+    else if(pageMove && numb!==4 && pX<h2OffW+radius && pX+rad>h2OffW && pZ<hOffH+radius && pZ+rad>hOffH){
       currPage++;
     }
+    
     fill(0,0,0,trans);
     if(numb==0){//title cover
       ellipse(h2OffW-50,hOffH+25,radius,radius);
@@ -159,10 +205,11 @@ function hotSpot(numb){
     else if(numb==4){//back cover
       ellipse(h1OffW,hOffH,radius,radius);
     }
-    else{
+    else if (numb>0 && numb<4){
         ellipse(h1OffW,hOffH,radius,radius);
         ellipse(h2OffW,hOffH,radius,radius);
     }
+ 
 }
 
 
@@ -179,7 +226,7 @@ function handleHandData(frame) {
     var hz = handPosition[2];
     // x is left-right, y is up-down, z is forward-back
     pX = map(hx, -200, 150, 166, screenWidth-166);
-    pY = map(hy,    0, 500, 500,   0);
+    //pY = map(hy,    0, 500, 500,   0);
     pZ = map(hz,    -5, 70, 150,   screenHeight-150);
   }
 }
@@ -190,22 +237,19 @@ function handleGestures(gesture) {
   switch(currPage){
     case 0:
        if(gesture.type=='keyTap'){
-        //console.log("his");
         pageMove=true;
-      }
-      else{
-        pageMove=false;
       }
       break;
     case 1:
       if (gesture.type == 'keyTap') {
       tapped=true;
-      pageMove;
+        if(page1_finished){
+          pageMove=true;
+        }
       }
-      else{
-        tapped=false;
-        pageMove=false;
-      }
+      break;
+    case 2:
+      console.log('hi');
       break;
   }
  

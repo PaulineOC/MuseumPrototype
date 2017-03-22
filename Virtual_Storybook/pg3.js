@@ -1,12 +1,10 @@
-var pg3Start=false;
 var pg3Finished=false;
 var pg3GameStart=false;
 
 //Game states
 var begin=true;
 var start=false;
-var appleSuccess=0;
-var win=false;
+
 var greeting;
 var fist=false;
 
@@ -22,8 +20,9 @@ var goodF=0;
 var badF=0;
 var deathFactor=0;
 
+
 var timeDone=false;
-var time=10;
+var time=15;
 
 // x & y position of our user controlled character
 var x = 0;
@@ -44,33 +43,27 @@ var gameFruitH;
 //SET UP
 
 function pg3Setup(){
-  greeting = new word("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
+  greeting = new word2("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
   //Score
   var goodScoreOffsetW=166+97.5;
   var scoreH=screenHeight-150;
   var badScoreOffsetW=screenWidth-166-292.5;
-  scoreGood= new word("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
-  scoreBad= new word("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
+  scoreGood= new word2("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
+  scoreBad= new word2("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
   //Fruit Grid
   var gridX=195+166;
   var gridY=200;
   var boxSize=65;
-
-    grid = new Array();
-    for(var i=1;i<=gridW;i++){
-      grid[i]=new Array();
-      for(var j=1;j<=gridH;j++){
-        var radius=60;
-        grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
-      }
+  grid = new Array();
+  for(var i=1;i<=gridW;i++){
+    grid[i]=new Array();
+    for(var j=1;j<=gridH;j++){
+      var radius=60;
+      grid[i][j]=new Fruit(i*boxSize+gridX-(.5*radius), j*boxSize+gridY-(.5*radius),radius, radius);
     }
+  }
 }
 
-//OPENING:
-function pg3Open(){
-    image(background1Img,0,0,screenWidth, screenHeight);
-    greeting.drawText();
-}
 
 //PLAYING THE GAME
   //Timer
@@ -91,9 +84,19 @@ function pg3Open(){
 }
 
 
-
 function game(){
-  image(background2Img,0,0,screenWidth,screenHeight);
+  if(chosenFruit=='apples'){
+    //console.log('apples');
+    background(0,0,255);//load bkgd w/ apples
+  }
+  else if(chosenFruit=='apricots'){
+    console.log('apricots');
+    background(255,0,0);//load bkgd w/ apricots
+  }
+  else{
+     console.log('peaches');
+    background(0,255,0);//load bkgrd w/ peaches
+  }
   timer();
   scoreGood.drawText(goodF);
   scoreBad.drawText(badF);
@@ -132,6 +135,8 @@ function game(){
         }//end of inner for
       }//end of outer for
     }//Timer
+    
+    drawPlayer();
 }
 
 
@@ -255,7 +260,7 @@ function Fruit(x,y,r1,r2){
 
 
 //Word Class
-function word(word,x,y,r,g,b){
+function word2(word,x,y,r,g,b){
   this.word=word;
   this.x=x;
   this.y=y;

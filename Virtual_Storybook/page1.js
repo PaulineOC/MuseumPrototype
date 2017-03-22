@@ -20,16 +20,15 @@ function page1setup() {
   choices.push(apples);
   var peaches = new word('cherries', 650,280);
   choices.push(peaches);
-  var avocado = new word('apricots', 650,400);
-  choices.push(avocado);
+  var apricot = new word('apricots', 650,400);
+  choices.push(apricot);
+  blank1 = new blank('_______', 360,250);
   
 }
 
-
-
 function page1draw() {
   if(!page1_finished){
-    fill(0,0,0);
+  fill(0,0,0);
   // WRITE pg1pg1Excerpt
   // set font
   textFont("Helvetica");
@@ -37,19 +36,18 @@ function page1draw() {
   textSize(20); 
    //draw our text
   text(pg1Excerpt, 160,250);
-  blank1 = new blank('_______', 360,250);
   blank1.drawText();
   // write word choices on page
     for(var i = 0; i < choices.length; i++){
       choices[i].drawText();
     }
-    drawPlayer();
-
   }
   
-  for(var i = 0; i < choices.length; i++){
-    choices[i].checkHit();
-  }
+  // for(var i = 0; i < choices.length; i++){
+  //   choices[i].checkHit();
+  // }
+  //drawPlayer();
+
 }
 
 //Word Class
@@ -67,9 +65,10 @@ function word(word,x,z){
   this.moveText = function(x, z){
         this.x=x;
         this.z=z;
-        this.drawText();
+        //this.drawText();
   };
   this.checkHit = function (){
+    console.log('check hit');
     if(tapped && inRange(pX, this.x) && inRange(pZ, this.z) && curr_selected_word==null && !page1_finished ){
        curr_selected_word= this;
         fill(0);
@@ -90,7 +89,7 @@ function blank(word,x,z){
     textSize(20);
       // set font
     textFont("Helvetica");
-    text(this.word,this.x,this.z);
+    //text(this.word,this.x,this.z);
   };
 }
 
