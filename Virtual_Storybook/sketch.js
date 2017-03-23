@@ -177,7 +177,7 @@ function draw() {
           startbutton();
           drawPlayer();
         }
-      }
+      }//end of if
       else if(pg3GameStart && !pg3Finished){
         game();
       }
@@ -189,7 +189,7 @@ function draw() {
           scoreBad.drawText(badF);
           hotSpot(currPage);
           drawPlayer();
-          
+          break;
         }
         else if(chosenFruit=='apricots'){
           background(pg3ApricotEnd);
@@ -198,6 +198,7 @@ function draw() {
           scoreBad.drawText(badF);
           hotSpot(currPage);
           drawPlayer();
+          break;
         }
         else{
           background(pg3CherriesEnd);
@@ -206,10 +207,13 @@ function draw() {
           scoreBad.drawText(badF);
           hotSpot(currPage);
           drawPlayer();
+          break;
+
         }
       }//end of else if
       break;
     case 3:
+      console.log('penultimate page');
       if(scoreF>10 && scoreB<5){
         //good pie
         background(goodPie);
@@ -226,7 +230,6 @@ function draw() {
         drawPlayer();
         hotSpot(currPage);
       }
-      console.log('penultimate page');
       break;
     case 4:
       background(back_cover_img);
@@ -274,6 +277,9 @@ function keyTyped(){
         pg3GameStart=true;
       }
       else if(!pg3GameStart && pg3Finished){
+        console.log('change hte scre');
+        scoreF=5;
+        scoreB=10;
       currPage++;
     }
   }
@@ -383,7 +389,6 @@ function handleGestures(gesture) {
             grid[thisX][thisY].dying =true;
            //If poisonous - need to  stop affecting other apples? 
             if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
-               console.log('gOOD ');
               //goodF++;
             }
             else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
