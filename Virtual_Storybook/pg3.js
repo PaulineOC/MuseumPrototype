@@ -6,6 +6,7 @@ var begin=true;
 var start=false;
 
 var greeting;
+var greeting2;
 var fist=false;
 
 //BOARD GAME STUFF
@@ -16,12 +17,12 @@ var grid;
 var currObj=null
 var thisX=null;
 var thisY=null;
-var goodF=0;
-var badF=0;
+var goodF;
+var badF;
 var deathFactor=0;
 
 var timeDone=false;
-var time=15;
+var time=5;
 
 
 // x & y position of our user controlled character
@@ -43,6 +44,8 @@ var gameFruitH;
 
 function pg3Setup(){
  
+ goodF=0;
+var badF=0;
   //Fruit Grid
   var gridX=195+166;
   var gridY=350;
@@ -92,10 +95,12 @@ function game(){
         for(var i=1;i<=gridW;i++){
           for(var j=1;j<=gridH;j++){
             
-            
             if(grid[i][j].alive){
+              
+              
               if(pX<grid[i][j].x+grid[i][j].rW && pX+rad>grid[i][j].x){
                 if(pZ<grid[i][j].y+grid[i][j].rH && pZ+rad>grid[i][j].y){
+                console.log('made a collision');
                  thisX=i;
                  thisY=j;
                   if(!grid[i][j].selected && grid[i][j].alive && !grid[i][j].dying){
