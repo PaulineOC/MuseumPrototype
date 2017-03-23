@@ -34,7 +34,7 @@ var page1_background;
 var pg3backgroundGame;
 var pg3AppleBegin;
 var pg3ApricotBegin;
-var pg3cherriesBegin;
+var pg3CherriesBegin;
 
 var pg3AppleEnd;
 var pg3ApricotEnd;
@@ -58,16 +58,15 @@ function preload(){
   
   
   //Page3 Stuff
-  // pg3AppleBegin=loadImage();
-  // pg3ApricotBegin=loadImage();
-  // pg3cherriesBegin=loadImage();
+  pg3AppleBegin=loadImage('assets/page3/Begin/apples.png');
+  pg3ApricotBegin=loadImage('assets/page3/Begin/apricots.png');
+  pg3CherriesBegin=loadImage('assets/page3/Begin/cherries.png');
   pg3AppleEnd=loadImage('assets/page3/End/apple.png');
   pg3ApricotEnd=loadImage('assets/page3/End/apricots.png');
-  // pg3cherriesEnd=loadImage('assets/page3/End/cherries.png');
+  pg3CherriesEnd=loadImage('assets/page3/End/cherries.png');
   
   
   pg3backgroundGame=loadImage('assets/page3/pages3_4_tree.png');
-  //pg3background3=loadImage('assets/page3/');
   apple=loadImage('assets/page3/fruit/apple.png');
   appleH=loadImage('assets/page3/fruit/apple_hover.png');
   apricot=loadImage('assets/page3/fruit/apricot.png');
@@ -126,18 +125,18 @@ function draw() {
     case 2:
       if(!pg3GameStart && !pg3Finished){
          if(chosenFruit=='apples'){
-          background(page1_background);//load bkgd w/ apples
+          background(pg3AppleBegin);//load bkgd w/ apples
           greeting.drawText();
           drawPlayer();
           
         }
         else if(chosenFruit=='apricots'){
-          background(page1_background);//load bkgd w/ apricots
+          background(pg3ApricotBegin);//load bkgd w/ apricots
           greeting.drawText();
           drawPlayer();
         }
         else{
-          background(page1_background);//load bkgrd w/ peaches
+          background(pg3CherriesBegin);//load bkgrd w/ peaches
           greeting.drawText();
           drawPlayer();
         }
@@ -149,29 +148,27 @@ function draw() {
       }
       else if(!pg3GameStart && pg3Finished){
         if(chosenFruit=='apples'){
-          background(pg3AppleEnd);//load bkgd w/ apples
+          background(pg3AppleEnd);
           greeting.drawText();
-          drawPlayer();
           hotSpot(currPage);
           drawPlayer();
           
         }
         else if(chosenFruit=='apricots'){
-          background(pg3ApricotEnd);//load bkgd w/ apricots
+          background(pg3ApricotEnd);
           greeting.drawText();
-          drawPlayer();
           hotSpot(currPage);
           drawPlayer();
         }
         else{
-          background(pg3cherriesEnd);//load bkgrd w/ peaches
+          background(pg3CherriesEnd);
           greeting.drawText();
-          drawPlayer();
           hotSpot(currPage);
           drawPlayer();
         }
-        
-      }//end of else
+      }//end of else if
+      break;
+    case 3:
       break;
     default: 
       background(0);
