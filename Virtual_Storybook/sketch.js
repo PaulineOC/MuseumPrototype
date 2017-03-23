@@ -8,8 +8,8 @@ var pageMove=false;
 
 //Player Navigator
 var pX=screenWidth/2
-var pZ=screenHeight-(2*rad); //change to size of image
-var rad=35;
+var pZ=screenHeight/2-(2*rad); //change to size of image
+var rad;
 
 //Book Controls
 var currPage=0;
@@ -17,7 +17,7 @@ var currPage=0;
 var frontCover=true;
 var pg1=false;
 // var pg3=false;
-var chosenFruit;
+var chosenFruit=null;
 // var pg4=false;
 var backCover =false;
 //Hotspot transparency
@@ -32,34 +32,48 @@ var page1_background;
 //var p1_backgroundApple;
 
 var pg3backgroundGame;
-var pg3backgroundApple;
-var pg3backgroundApricot;
-var pg3backgroundCherry;
+var pg3AppleBegin;
+var pg3ApricotBegin;
+var pg3cherriesBegin;
+
+var pg3AppleEnd;
+var pg3ApricotEnd;
+var pg3cherriesEnd;
+
 var apple;
 var appleH;
 var apricot;
 var apricotH;
-var cherry;
-var cherryH;
+var cherries;
+var cherriesH;
 
 //Load Images
 function preload(){
   front_cover_img = loadImage('assets/start/book_front_cover.png');
   back_cover_img = loadImage('assets/end/book_back_cover.png');
   //Page1 Stuff
-  page1_background = loadImage('assets/page1/pages1_2.png');
+ page1_background = loadImage('assets/page1/pages1_2.png');
+ // page1_apple=loadImage();
   //Page 3 background complete
   
   
   //Page3 Stuff
+  // pg3AppleBegin=loadImage();
+  // pg3ApricotBegin=loadImage();
+  // pg3cherriesBegin=loadImage();
+  pg3AppleEnd=loadImage('assets/page3/End/apple.png');
+  pg3ApricotEnd=loadImage('assets/page3/End/apricots.png');
+  // pg3cherriesEnd=loadImage('assets/page3/End/cherries.png');
+  
+  
   pg3backgroundGame=loadImage('assets/page3/pages3_4_tree.png');
   //pg3background3=loadImage('assets/page3/');
   apple=loadImage('assets/page3/fruit/apple.png');
   appleH=loadImage('assets/page3/fruit/apple_hover.png');
   apricot=loadImage('assets/page3/fruit/apricot.png');
   apricotH=loadImage('assets/page3/fruit/apricot_hover.png');
-  cherry=loadImage('assets/page3/fruit/cherries.png');
-  cherryH=loadImage('assets/page3/fruit/cherry_hover.png');
+  cherries=loadImage('assets/page3/fruit/cherries.png');
+  cherriesH=loadImage('assets/page3/fruit/cherries_hover.png');
   //Page 3 background complete
 }
 
@@ -73,6 +87,9 @@ function setup() {
     page1setup();
     //setup page3
     pg3Setup();
+    
+    //Player setup
+    rad=35;
     
   //Leap stuff
     outputDiv = select('#output');
@@ -95,7 +112,7 @@ function draw() {
     case 1:
       if(!page1_finished){
         background(page1_background);
-       page1draw();
+        page1draw();
       } 
       else{
         chosenFruit=curr_selected_word.word;
@@ -111,26 +128,49 @@ function draw() {
          if(chosenFruit=='apples'){
           background(page1_background);//load bkgd w/ apples
           greeting.drawText();
-
+          drawPlayer();
+          
         }
         else if(chosenFruit=='apricots'){
           background(page1_background);//load bkgd w/ apricots
           greeting.drawText();
-
+          drawPlayer();
         }
         else{
           background(page1_background);//load bkgrd w/ peaches
           greeting.drawText();
+          drawPlayer();
         }
+        
+
       }
-      else if(pg3GameStart){
-        background(pg3backgroundGame);
+      else if(pg3GameStart && !pg3Finished){
         game();
       }
       else if(!pg3GameStart && pg3Finished){
-        hotSpot(currPage);
-        drawPlayer();
-
+        if(chosenFruit=='apples'){
+          background(pg3AppleEnd);//load bkgd w/ apples
+          greeting.drawText();
+          drawPlayer();
+          hotSpot(currPage);
+          drawPlayer();
+          
+        }
+        else if(chosenFruit=='apricots'){
+          background(pg3ApricotEnd);//load bkgd w/ apricots
+          greeting.drawText();
+          drawPlayer();
+          hotSpot(currPage);
+          drawPlayer();
+        }
+        else{
+          background(pg3cherriesEnd);//load bkgrd w/ peaches
+          greeting.drawText();
+          drawPlayer();
+          hotSpot(currPage);
+          drawPlayer();
+        }
+        
       }//end of else
       break;
     default: 
@@ -144,7 +184,6 @@ function keyTyped(){
   if (key=="o"){
     if(currPage==1){
       if(!page1_finished){
-        curr_selected_word=choices[0];//forced choices
         page1_finished=true;
       }
       else{
@@ -167,7 +206,7 @@ function keyTyped(){
 function drawPlayer(){
   fill(255,100,100,150); // set color
   noStroke();
-  ellipse(pX, pZ, rad);
+  ellipse(pX, pZ, rad,rad);
 }
 
 function hotSpot(numb){
@@ -188,8 +227,6 @@ function hotSpot(numb){
         fall=true;
       }
     }
-    
-       
     //Collision w/ Left H0
     if(numb!==0 && pX<h1OffW+radius && pX+rad>h1OffW && pZ<hOffH+radius && pZ+rad>hOffH && pageMove){
         currPage--;
@@ -249,7 +286,27 @@ function handleGestures(gesture) {
       }
       break;
     case 2:
-      console.log('hi');
+      
+    madeTap=true;
+    if(thisX && thisY && !grid[thisX][thisY].selected){
+        grid[thisX][thisY].selected =true;
+        grid[thisX][thisY].dying =true;
+       //Add score
+       //If poisonous - need to  stop affecting other apples? 
+        if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
+          goodF++;
+        }
+        else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
+          badF++;
+          deathFactor-=2;
+          if(deathFactor<=2){
+            deathFactor=2;
+          }
+        }
+    }
+    else{
+      madeTap=false;
+    }
       break;
   }
  

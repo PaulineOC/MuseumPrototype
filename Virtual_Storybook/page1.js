@@ -43,10 +43,10 @@ function page1draw() {
     }
   }
   
-  // for(var i = 0; i < choices.length; i++){
-  //   choices[i].checkHit();
-  // }
-  //drawPlayer();
+  for(var i = 0; i < choices.length; i++){
+    choices[i].checkHit();
+  }
+  drawPlayer();
 
 }
 
@@ -68,7 +68,6 @@ function word(word,x,z){
         //this.drawText();
   };
   this.checkHit = function (){
-    console.log('check hit');
     if(tapped && inRange(pX, this.x) && inRange(pZ, this.z) && curr_selected_word==null && !page1_finished ){
        curr_selected_word= this;
         fill(0);
@@ -89,7 +88,7 @@ function blank(word,x,z){
     textSize(20);
       // set font
     textFont("Helvetica");
-    //text(this.word,this.x,this.z);
+    text(this.word,this.x,this.z);
   };
 }
 

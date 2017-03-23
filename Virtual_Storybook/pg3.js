@@ -20,9 +20,9 @@ var goodF=0;
 var badF=0;
 var deathFactor=0;
 
-
 var timeDone=false;
 var time=15;
+
 
 // x & y position of our user controlled character
 var x = 0;
@@ -32,7 +32,6 @@ var rad =0;
 //Screen Offsets:
 var timerOffset=200;
 //set from previous game
-var fruitType='apricot';
 //Images
 var background1Img;
 var background2Img;
@@ -44,15 +43,10 @@ var gameFruitH;
 
 function pg3Setup(){
   greeting = new word2("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
-  //Score
-  var goodScoreOffsetW=166+97.5;
-  var scoreH=screenHeight-150;
-  var badScoreOffsetW=screenWidth-166-292.5;
-  scoreGood= new word2("Good "+fruitType+"s:", goodScoreOffsetW,scoreH,0,0,255);
-  scoreBad= new word2("Bad "+fruitType+"s:", badScoreOffsetW,scoreH,0,0,255);
+ 
   //Fruit Grid
   var gridX=195+166;
-  var gridY=200;
+  var gridY=350;
   var boxSize=65;
   grid = new Array();
   for(var i=1;i<=gridW;i++){
@@ -85,18 +79,12 @@ function pg3Setup(){
 
 
 function game(){
-  if(chosenFruit=='apples'){
-    //console.log('apples');
-    background(0,0,255);//load bkgd w/ apples
-  }
-  else if(chosenFruit=='apricots'){
-    console.log('apricots');
-    background(255,0,0);//load bkgd w/ apricots
-  }
-  else{
-     console.log('peaches');
-    background(0,255,0);//load bkgrd w/ peaches
-  }
+  background(pg3backgroundGame);
+  var goodScoreOffsetW=166+97.5;
+  var scoreH=screenHeight-150;
+  var badScoreOffsetW=screenWidth-166-292.5;
+  scoreGood= new word2("Good "+chosenFruit, goodScoreOffsetW,scoreH,0,0,255);
+  scoreBad= new word2("Bad "+chosenFruit, badScoreOffsetW,scoreH,0,0,255);
   timer();
   scoreGood.drawText(goodF);
   scoreBad.drawText(badF);
@@ -104,9 +92,11 @@ function game(){
   if(!timeDone){
         for(var i=1;i<=gridW;i++){
           for(var j=1;j<=gridH;j++){
+            
+            
             if(grid[i][j].alive){
-              if(x<grid[i][j].x+grid[i][j].rW && x+rad>grid[i][j].x){
-                if(z<grid[i][j].y+grid[i][j].rH && z+rad>grid[i][j].y){
+              if(pX<grid[i][j].x+grid[i][j].rW && pX+rad>grid[i][j].x){
+                if(pZ<grid[i][j].y+grid[i][j].rH && pZ+rad>grid[i][j].y){
                  thisX=i;
                  thisY=j;
                   if(!grid[i][j].selected && grid[i][j].alive && !grid[i][j].dying){
@@ -134,41 +124,45 @@ function game(){
           }
         }//end of inner for
       }//end of outer for
+       drawPlayer();
     }//Timer
-    
-    drawPlayer();
+    else{
+      //Game over
+      pg3GameStart=false;
+      pg3Finished=true;
+    }
+    //GAME OVER
 }
 
 
 //Controls
 
-
-
-function mouseClickedpg3(){
-    if(grid[thisX][thisY] && !grid[thisX][thisY].selected){
-      grid[thisX][thisY].selected =true;
-      grid[thisX][thisY].dying =true;
-      //Add score
-      if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
-        goodF++;
-      }
-      else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
-        badF++;
-        deathFactor-=2;
-        if(deathFactor<=2){
-          deathFactor=2;
-        }
-      }
-    }
-}//end of Mouseclicked3
+// function mouseClickedpg3(){
+//     if(grid[thisX][thisY] && !grid[thisX][thisY].selected){
+//       grid[thisX][thisY].selected =true;
+//       grid[thisX][thisY].dying =true;
+//       //Add score
+//       if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
+//         goodF++;
+//       }
+//       else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
+//         badF++;
+//         deathFactor-=2;
+//         if(deathFactor<=2){
+//           deathFactor=2;
+//         }
+//       }
+//     }
+// }//end of Mouseclicked3
 
 
 
 //GAME OBJECTS
 //Fruit
 function Fruit(x,y,r1,r2){
-  this.img=gameFruit;
-  this.imgH=gameFruitH;
+  
+  this.img;
+  this.imgH;
   this.x=x;
   this.y=y;
   this.rW=r1;
@@ -192,6 +186,18 @@ function Fruit(x,y,r1,r2){
   this.hover=false;
   
   this.spawnFruit= function(firstTime){
+      if(chosenFruit=='apples'){
+      this.img=apple;
+      this.imgH=appleH;
+      }
+      else if(chosenFruit=='apricots'){
+        this.img=apricot;
+        this.imgH=apricotH;
+      }
+      else if(chosenFruit=='cherries'){
+        this.img=cherries;
+        this.img=cherriesH;
+      }
     var tmp= random(0,2);
     if(tmp>=.5){
       this.type='good';
@@ -213,7 +219,7 @@ function Fruit(x,y,r1,r2){
   }//end of spawnFruit
   
   
-  
+
   this.drawFruit = function(){
       noStroke();
       this.trans-=.25*deathFactor;
@@ -256,8 +262,6 @@ function Fruit(x,y,r1,r2){
       }
   }//end of drawFruit;
 }
-
-
 
 //Word Class
 function word2(word,x,y,r,g,b){
