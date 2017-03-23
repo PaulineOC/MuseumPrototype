@@ -1,7 +1,7 @@
 var pg3Finished=false;
 var pg3GameStart=false;
+var collision=false;
 
-//Game states
 var begin=true;
 var start=false;
 
