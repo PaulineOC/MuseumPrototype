@@ -11,31 +11,55 @@ var curr_selected_blank;
 var curr_selected_word;
 
 
-var pg1Excerpt = "Sally wanted to pick";
+var pg1Excerpt = "Once upon a time,";
+var pg2Excerpt = "there was a girl named Sally.";
+var pg3Excerpt = "She lived with her grandma";
+var pg4Excerpt = "in the Tangled Twisted woods.";
+var pg5Excerpt = "One day, her grandma asks her to";
+var pg6Excerpt = "go pick fruit in the garden";
+var pg7Excerpt = "for the pie that she wants to";
+var pg8Excerpt = "bake for the king’s ball.";
+var pg9Excerpt = "Help Sally pick";
+var pg10Excerpt = "for the pie!";
+
+var excerpt = "Help Sally pick the fruit!";
 
 
 function page1setup() {
-  blank1 = new blank('_______', 320,250);
-  var apples = new word('apples', 650,160);
+  blank1 = new blank('_________', 380,860);
+  var apples = new word('apples', 800,300);
   choices.push(apples);
-  var peaches = new word('cherries', 650,280);
+  var peaches = new word('cherries', 800,500);
   choices.push(peaches);
-  var apricot = new word('apricots', 650,400);
+  var apricot = new word('apricots', 800,700);
   choices.push(apricot);
-  blank1 = new blank('_______', 360,250);
+
   
 }
 
 function page1draw() {
   if(!page1_finished){
+   //draw our excerpt
+   
   fill(0,0,0);
   // WRITE pg1pg1Excerpt
   // set font
-  textFont("Helvetica");
+  textFont("Pacifico");
   // set a larger text size 
-  textSize(20); 
-   //draw our text
-  text(pg1Excerpt, 160,250);
+  textSize(25); 
+
+  text(pg1Excerpt, 190,240);
+  text(pg2Excerpt, 190,300);
+  text(pg3Excerpt, 190,380);
+  text(pg4Excerpt, 190,460);
+  text(pg5Excerpt, 190,540);
+  text(pg6Excerpt, 190,620);
+  text(pg7Excerpt, 190,700);
+  text(pg8Excerpt, 190,780);
+  text(pg9Excerpt, 190,860);
+  text(pg10Excerpt,500,860);
+  
+  
   blank1.drawText();
   // write word choices on page
     for(var i = 0; i < choices.length; i++){
@@ -56,9 +80,9 @@ function word(word,x,z){
   this.x = x;
   this.z = z;
   this.drawText = function(){
-    textSize(20);
+    textSize(50);
       // set font
-    textFont("Helvetica");
+    textFont("Pacifico");
     fill(0,0,0);
     text(this.word,this.x,this.z);
   };

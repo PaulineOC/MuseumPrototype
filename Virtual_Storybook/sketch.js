@@ -53,7 +53,11 @@ function preload(){
   back_cover_img = loadImage('assets/end/book_back_cover.png');
   //Page1 Stuff
  page1_background = loadImage('assets/page1/pages1_2.png');
- // page1_apple=loadImage();
+ 
+ page1_background_apples = loadImage('assets/page1/pages1_2_tree_apples.png');
+ page1_background_apricots = loadImage('assets/page1/pages1_2_tree_apricots.png');
+ page1_background_cherries = loadImage('assets/page1/pages1_2_tree_cherries.png');
+ 
   //Page 3 background complete
   
   
@@ -87,7 +91,7 @@ function setup() {
     //setup page3
     pg3Setup();
     
-    //Player setup
+    //Player setup (guiding circle)
     rad=35;
     
   //Leap stuff
@@ -105,7 +109,7 @@ function draw() {
   switch(currPage){
     case 0:
       background(front_cover_img);
-      hotSpot(currPage);
+      //hotSpot(currPage);
       drawPlayer();
       break;
     case 1:
@@ -115,9 +119,19 @@ function draw() {
       } 
       else{
         chosenFruit=curr_selected_word.word;
-        background(page1_background);//load other background
+        if(chosenFruit == 'apples'){
+          background(page1_background_apples);
+        }
+        else if(chosenFruit =='apricots'){
+          background(page1_background_apricots);
+        }
+        else{
+          background(page1_background_cherries);
+        }
+        
         fill(0);
-        text(pg1Excerpt,160,250);
+        textSize(30);
+        text(excerpt,240,500);
         hotSpot(currPage);
         drawPlayer();
       }
@@ -201,7 +215,7 @@ function keyTyped(){
 }
 
 function drawPlayer(){
-  fill(255,100,100,150); // set color
+  fill(255,100,100,150); // set color of player
   noStroke();
   ellipse(pX, pZ, rad,rad);
 }
@@ -210,6 +224,7 @@ function hotSpot(numb){
     var h1OffW=166+50
     var h2OffW=screenWidth-166-50;
     var hOffH=screenHeight-150;
+    // radius of hotspot
     var radius=50;
     
     if(fall){
@@ -232,6 +247,7 @@ function hotSpot(numb){
       currPage++;
     }
     
+    // CHANGE COLOR?
     fill(0,0,0,trans);
     if(numb==0){//title cover
       ellipse(h2OffW-50,hOffH+25,radius,radius);
@@ -270,8 +286,10 @@ function handleGestures(gesture) {
 
   switch(currPage){
     case 0:
-       if(gesture.type=='keyTap'){
+       if(gesture.type=='swipe'){
+         //console.log('swipe');
         pageMove=true;
+        currPage++;
       }
       break;
     case 1:
