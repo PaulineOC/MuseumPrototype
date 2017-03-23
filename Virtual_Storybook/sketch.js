@@ -24,6 +24,8 @@ var backCover =false;
 var trans=100;
 var fall=true;
 
+var scoreF=0;
+var scoreB=0;
 
 // images
 var front_cover_img;
@@ -51,6 +53,10 @@ var apricot;
 var apricotH;
 var cherries;
 var cherriesH;
+
+var poisonPie;
+var  smallPie;
+var  goodPie;
 
 
 //Load Images
@@ -82,7 +88,12 @@ function preload(){
   apricotH=loadImage('assets/page3/fruit/apricot_hover.png');
   cherries=loadImage('assets/page3/fruit/cherries.png');
   cherriesH=loadImage('assets/page3/fruit/cherries_hover.png');
-  //Page 3 background complete
+
+  poisonPie=loadImage('assets/page5/pies/poison_pie.png');
+  smallPie=loadImage('assets/page5/pies/small_pie.png');
+  goodPie=loadImage('assets/page5/pies/regular_pie.png');
+
+  
 }
 
 function setup() {
@@ -174,8 +185,8 @@ function draw() {
         if(chosenFruit=='apples'){
           background(pg3AppleEnd);
           greeting2.drawText();
-            scoreGood.drawText(goodF);
-            scoreBad.drawText(badF);
+          scoreGood.drawText(goodF);
+          scoreBad.drawText(badF);
           hotSpot(currPage);
           drawPlayer();
           
@@ -199,6 +210,22 @@ function draw() {
       }//end of else if
       break;
     case 3:
+      if(scoreF>10 && scoreB<5){
+        //good pie
+        background(goodPie);
+        drawPlayer();
+        hotSpot(currPage);
+      }
+      else if(scoreB >= 5){
+        background(poisonPie);
+        drawPlayer();
+        hotSpot(currPage);
+      }
+      else if(scoreF < 10 && scoreB<5){
+        background(smallPie);
+        drawPlayer();
+        hotSpot(currPage);
+      }
       console.log('penultimate page');
       break;
     case 4:
@@ -246,13 +273,19 @@ function keyTyped(){
       if(!pg3GameStart){
         pg3GameStart=true;
       }
-      else{
+      else if(!pg3GameStart && pg3Finished){
       currPage++;
     }
-      
-    }
+  }
+  else if(currPage==3){
+    currPage++;
+  }
     
     //currPage++;
+  }
+  else if(keyTyped=='e' && currPage==2){
+    scoreF=5;
+    scoreB=10;
   }
 }
 
@@ -365,7 +398,6 @@ function handleGestures(gesture) {
         else{
           madeTap=false;
         }
-        
       }
       else if(!pg3GameStart && pg3Finished && gesture.type=="keyTap" ){
         pageMove=true;
