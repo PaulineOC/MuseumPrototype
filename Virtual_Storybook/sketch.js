@@ -52,13 +52,19 @@ function preload(){
   front_cover_img = loadImage('assets/start/book_front_cover.png');
   back_cover_img = loadImage('assets/end/book_back_cover.png');
   //Page1 Stuff
+<<<<<<< HEAD
  page1_background = loadImage('assets/page1/pages1_2.png');
  
  page1_background_apples = loadImage('assets/page1/pages1_2_tree_apples.png');
  page1_background_apricots = loadImage('assets/page1/pages1_2_tree_apricots.png');
  page1_background_cherries = loadImage('assets/page1/pages1_2_tree_cherries.png');
  
+=======
+  page1_background = loadImage('assets/page1/pages1_2.png');
+ // page1_apple=loadImage();
+>>>>>>> origin/master
   //Page 3 background complete
+  
   
   
   //Page3 Stuff
@@ -138,24 +144,28 @@ function draw() {
       break;
     case 2:
       if(!pg3GameStart && !pg3Finished){
-         if(chosenFruit=='apples'){
+        var backgroundInfo="Sally needs to pick the ripe "+chosenFruit+" ,\nbut has to be careful about \n avoiding the poisoned ones\n that will  rot the tree.";
+        var instructions= "\nTo pick "+chosenFruit+ " use the 'screenTap' gesture. \nMake sure you take enough good ones.";
+        var instructions2="\nYou may have to pick some poisoned ones\n to make sure they dont' rot the tree,\n but don't select too many\n or the consequences could be dire."
+        greeting = new word2(backgroundInfo+instructions+instructions2,200,windowHeight/2,0,0,255);
+        if(chosenFruit=='apples'){
           background(pg3AppleBegin);//load bkgd w/ apples
           greeting.drawText();
+          startbutton();
           drawPlayer();
-          
         }
         else if(chosenFruit=='apricots'){
           background(pg3ApricotBegin);//load bkgd w/ apricots
           greeting.drawText();
+          startbutton();
           drawPlayer();
         }
         else{
           background(pg3CherriesBegin);//load bkgrd w/ peaches
           greeting.drawText();
+          startbutton();
           drawPlayer();
         }
-        
-
       }
       else if(pg3GameStart && !pg3Finished){
         game();
@@ -183,17 +193,42 @@ function draw() {
       }//end of else if
       break;
     case 3:
+      console.log('penultimate page');
       break;
+    case 4:
+      image(back_cover_img);
     default: 
       background(0);
       break;
+  }
+  
+  function startbutton(){
+
+    fill(0,0,255,150);
+    rect(250,675,275,50);
+    textSize(20);
+    textFont("Georgia");
+    fill(0,0,0);
+    text("'KeyTap' Me to Pick Fruit!", 275, 700);
+    
+    
+    if(pX<250+275 && pX+rad>250 && pZ<675+50 && pZ+rad>675 && !pg3GameStart && !pg3Finished){
+        collision=true;
+    }
+    else{
+      collision=false;
+    }
+    
   }
 }
 
 function keyTyped(){
   // keypress for page1
   if (key=="o"){
-    if(currPage==1){
+    if(currPage==0){
+      currPage++;
+    }
+    else if (currPage==1){
       if(!page1_finished){
         page1_finished=true;
       }
@@ -205,11 +240,12 @@ function keyTyped(){
       if(!pg3GameStart){
         pg3GameStart=true;
       }
-      
-    }
-    else{
+      else{
       currPage++;
     }
+      
+    }
+    
     //currPage++;
   }
 }
@@ -283,7 +319,6 @@ function handleHandData(frame) {
 
 
 function handleGestures(gesture) {
-
   switch(currPage){
     case 0:
        if(gesture.type=='swipe'){
@@ -301,27 +336,34 @@ function handleGestures(gesture) {
       }
       break;
     case 2:
-      
-    madeTap=true;
-    if(thisX && thisY && !grid[thisX][thisY].selected){
-        grid[thisX][thisY].selected =true;
-        grid[thisX][thisY].dying =true;
-       //Add score
-       //If poisonous - need to  stop affecting other apples? 
-        if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
-          goodF++;
+      if(!pg3GameStart && gesture.type=="keyTap" && collision ){
+        pg3GameStart=true;
+      }
+      else if(pg3GameStart && gesture.type=="keyTap"){
+        madeTap=true;
+        if(thisX && thisY && !grid[thisX][thisY].selected){
+            grid[thisX][thisY].selected =true;
+            grid[thisX][thisY].dying =true;
+           //If poisonous - need to  stop affecting other apples? 
+            if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='good'){
+              goodF++;
+            }
+            else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
+              badF++;
+              deathFactor-=2;
+              if(deathFactor<=2){
+                deathFactor=2;
+              }
+            }
+        } 
+        else{
+          madeTap=false;
         }
-        else if(grid[thisX][thisY].alive==true && grid[thisX][thisY].type=='bad'){
-          badF++;
-          deathFactor-=2;
-          if(deathFactor<=2){
-            deathFactor=2;
-          }
-        }
-    }
-    else{
-      madeTap=false;
-    }
+        
+      }
+      else if(!pg3GameStart && pg3Finished && gesture.type=="keyTap" ){
+        pageMove=true;
+      }
       break;
   }
  
