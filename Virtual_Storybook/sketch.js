@@ -87,10 +87,8 @@ function setup() {
     page1setup();
     //setup page3
     pg3Setup();
-    
     //Player setup
     rad=35;
-    
   //Leap stuff
     outputDiv = select('#output');
     //set up our leap controller
