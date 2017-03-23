@@ -42,7 +42,6 @@ var gameFruitH;
 //SET UP
 
 function pg3Setup(){
-  greeting = new word2("Hello! Please press S",windowWidth/4,windowHeight/2,0,0,255);
  
   //Fruit Grid
   var gridX=195+166;
@@ -80,6 +79,7 @@ function pg3Setup(){
 
 function game(){
   background(pg3backgroundGame);
+  
   var goodScoreOffsetW=166+97.5;
   var scoreH=screenHeight-150;
   var badScoreOffsetW=screenWidth-166-292.5;
@@ -274,10 +274,16 @@ function word2(word,x,y,r,g,b){
   this.len=0;
   
   this.drawText = function(extraT){
-    textSize(28);
+    textSize(20);
     textFont("Georgia");
     fill(this.r,this.g,this.b);
-    text(this.word+" "+extraT,this.x,this.y,this.x2,this.y2);
-    this.len=textWidth(this.word);
+     this.len=textWidth(this.word);
+    if(extraT){
+      text(this.word+" "+extraT,this.x,this.y,this.x2,this.y2);
+    }
+    else{
+      text(this.word,this.x,this.y,this.x2,this.y2);
+    }
+   
   };
 }
