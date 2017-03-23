@@ -273,9 +273,9 @@ function word2(word,x,y,r,g,b){
   this.len=0;
   
   this.drawText = function(extraT){
-    textSize(20);
-    textFont("Georgia");
-    fill(this.r,this.g,this.b);
+    textSize(24);
+    textFont("Pacifico");
+    fill(0);
      this.len=textWidth(this.word);
     if(extraT){
       text(this.word+" "+extraT,this.x,this.y,this.x2,this.y2);

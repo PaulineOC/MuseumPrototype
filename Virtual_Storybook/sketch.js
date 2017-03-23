@@ -21,7 +21,7 @@ var chosenFruit=null;
 // var pg4=false;
 var backCover =false;
 //Hotspot transparency
-var trans=250;
+var trans=100;
 var fall=true;
 
 
@@ -30,6 +30,11 @@ var front_cover_img;
 var back_cover_img;
 var page1_background;
 //var p1_backgroundApple;
+
+
+var page1_tree_apples;
+var page1_tree_apricots;
+var page1_tree_cherries;
 
 var pg3backgroundGame;
 var pg3AppleBegin;
@@ -47,13 +52,16 @@ var apricotH;
 var cherries;
 var cherriesH;
 
+
 //Load Images
 function preload(){
   front_cover_img = loadImage('assets/start/book_front_cover.png');
   back_cover_img = loadImage('assets/end/book_back_cover.png');
   //Page1 Stuff
   page1_background = loadImage('assets/page1/pages1_2.png');
- // page1_apple=loadImage();
+  page1_tree_apples = loadImage('assets/page1/pages1_2_tree_apples.png');
+  page1_tree_apricots = loadImage('assets/page1/pages1_2_tree_apricots.png');
+  page1_tree_cherries = loadImage('assets/page1/pages1_2_tree_cherries.png');
   //Page 3 background complete
   
   
@@ -104,7 +112,7 @@ function draw() {
   switch(currPage){
     case 0:
       background(front_cover_img);
-      hotSpot(currPage);
+      //hotSpot(currPage);
       drawPlayer();
       break;
     case 1:
@@ -114,9 +122,21 @@ function draw() {
       } 
       else{
         chosenFruit=curr_selected_word.word;
-        background(page1_background);//load other background
+        console.log(chosenFruit);
+        
+        if(chosenFruit == 'apricots'){
+          background(page1_tree_apricots);
+        }
+        else if(chosenFruit == 'apples'){
+          background(page1_tree_apples);
+        }
+        else{
+          background(page1_tree_cherries);
+        }
+        
+        textSize(30);
         fill(0);
-        text(pg1Excerpt,160,250);
+        text(excerpt,220,500);
         hotSpot(currPage);
         drawPlayer();
       }
@@ -183,15 +203,15 @@ function draw() {
   
   function startbutton(){
 
-    fill(0,0,255,150);
-    rect(250,675,275,50);
+    fill(0,0,255,100);
+    rect(250,750,275,50);
     textSize(20);
-    textFont("Georgia");
+    textFont("Pacifico");
     fill(0,0,0);
-    text("'KeyTap' Me to Pick Fruit!", 275, 700);
+    text("'KeyTap' Me to Pick Fruit!", 265, 775);
     
     
-    if(pX<250+275 && pX+rad>250 && pZ<675+50 && pZ+rad>675 && !pg3GameStart && !pg3Finished){
+    if(pX<250+275 && pX+rad>250 && pZ<750+50 && pZ+rad> 750 && !pg3GameStart && !pg3Finished){
         collision=true;
     }
     else{
@@ -261,7 +281,7 @@ function hotSpot(numb){
       currPage++;
     }
     
-    fill(0,0,0,trans);
+    fill(0,0,255,trans);
     if(numb==0){//title cover
       ellipse(h2OffW-50,hOffH+25,radius,radius);
     }
@@ -298,7 +318,8 @@ function handleHandData(frame) {
 function handleGestures(gesture) {
   switch(currPage){
     case 0:
-       if(gesture.type=='keyTap'){
+       if(gesture.type=='swipe'){
+        currPage++;
         pageMove=true;
       }
       break;
